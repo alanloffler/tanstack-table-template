@@ -36,6 +36,7 @@ export default function App() {
     {
       accessorKey: "id",
       size: 40,
+      enableColumnFilter: false,
       header: ({ column }) => (
         <SortableHeader column={column}>ID</SortableHeader>
       ),
