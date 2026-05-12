@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable } from "@/components/DataTable";
 import { SortableHeader } from "@/components/SortableHeader";
 
@@ -10,17 +11,38 @@ export default function App() {
 
   const columns: ColumnDef<ICharacter>[] = [
     {
+      id: "select-col",
+      size: 20,
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllRowsSelected()
+              ? true
+              : table.getIsSomeRowsSelected()
+                ? "indeterminate"
+                : false
+          }
+          onCheckedChange={(checked) => table.toggleAllRowsSelected(!!checked)}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          disabled={!row.getCanSelect()}
+          onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+        />
+      ),
+    },
+    {
       accessorKey: "id",
-      maxSize: 40,
-      minSize: 40,
+      size: 40,
       header: ({ column }) => (
         <SortableHeader column={column}>ID</SortableHeader>
       ),
     },
     {
       accessorKey: "name",
-      maxSize: 80,
-      minSize: 80,
+      size: 80,
       header: ({ column }) => (
         <SortableHeader column={column}>Nombre</SortableHeader>
       ),
