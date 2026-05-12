@@ -147,9 +147,8 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               </SortableContext>
             ))}
-            {/* filter row stays exactly as-is */}
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={`${headerGroup.id}-filters`}>
+              <TableRow className="bg-background hover:bg-background" key={`${headerGroup.id}-filters`}>
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={`${header.id}-filter`}
@@ -164,8 +163,8 @@ export function DataTable<TData, TValue>({
                       <Input
                         value={(header.column.getFilterValue() as string) ?? ""}
                         onChange={(e) => header.column.setFilterValue(e.target.value)}
-                        placeholder="Filtrar..."
-                        className="h-7 text-xs"
+                        placeholder="Buscar..."
+                        className="h-7 max-w-50 text-xs"
                       />
                     ) : null}
                   </TableHead>
