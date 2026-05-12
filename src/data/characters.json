@@ -1,0 +1,329 @@
+{
+  "count": 1182,
+  "next": "https://thesimpsonsapi.com/api/characters?page=2",
+  "prev": null,
+  "pages": 60,
+  "results": [
+    {
+      "id": 1,
+      "age": 39,
+      "birthdate": "1956-05-12",
+      "gender": "Male",
+      "name": "Homer Simpson",
+      "occupation": "Safety Inspector",
+      "portrait_path": "/character/1.webp",
+      "phrases": [
+        "Doh!",
+        "Why you little...!",
+        "Woo-hoo!",
+        "Mmm... (food)... *drooling*",
+        "Stupid Flanders!",
+        "Shut up Flanders!",
+        "AAAAGHH!",
+        "Lisa, knock off that racket!",
+        "Uh oh, the boss.",
+        "Lets all go out for frosty chocolate milkshakes!",
+        "Whatever, Ill be at Moes.",
+        "I am evil Ho-mer! I am evil Ho-mer! I am evil Ho-mer!",
+        "Better them than me.",
+        "Better them than me... Oh wait, that was me.",
+        "Marge, my face hurts again!"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 2,
+      "age": 39,
+      "birthdate": null,
+      "gender": "Female",
+      "name": "Marge Simpson",
+      "occupation": "Unemployed",
+      "portrait_path": "/character/2.webp",
+      "phrases": [
+        "Hrmmm...",
+        "Now its Marges time to shine!",
+        "Oh!",
+        "Oh, Homie!",
+        "Its true. Women arent very good drivers."
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 3,
+      "age": 10,
+      "birthdate": "1980-02-23",
+      "gender": "Male",
+      "name": "Bart Simpson",
+      "occupation": "Student at Springfield Elementary School",
+      "portrait_path": "/character/3.webp",
+      "phrases": [
+        "¡Ay Caramba!",
+        "Eat my shorts!",
+        "I didnt do it!",
+        "Dont have a cow, man.",
+        "I’m Bart Simpson, who the hell are you?",
+        "Aah! Sideshow Bob!",
+        "Nobody better lay a finger on my Butterfinger!",
+        "I didnt think it was physically possible, but this both sucks and blows."
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 4,
+      "age": 8,
+      "birthdate": "1982-05-09",
+      "gender": "Female",
+      "name": "Lisa Simpson",
+      "occupation": "Student at Springfield Elementary School, CTU Agent, Hall-monitor, Member of PETA",
+      "portrait_path": "/character/4.webp",
+      "phrases": [
+        "Well, I wish you wouldnt. Because, aside from the fact that he has the same frailties as all human beings, hes the only father I have. Therefore, he is my model of manhood, and my estimation of him will govern the prospects of my adult relationships. So I hope you bear in mind that any knock at him is a knock at me. And I am far too young to defend myself against such onslaughts.",
+        "Bart!",
+        "If anyone wants me, Ill be in my room.",
+        "Quit it, Bart!",
+        "BAAAAART!!",
+        "Mommy.",
+        "David Hasselhoff.",
+        "Homer.",
+        "Having never received encouragement, Im not sure how it should sound, but here goes: I believe in you.",
+        "Shut up, Meg.",
+        "The truth must be told.",
+        "I hope these are recyclable.",
+        "Yeah, Bart!"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 5,
+      "age": 1,
+      "birthdate": "1990-11-07",
+      "gender": "Female",
+      "name": "Maggie Simpson",
+      "occupation": "Unknown",
+      "portrait_path": "/character/5.webp",
+      "phrases": ["*suck-suck*", "Good night.", "Daddy."],
+      "status": "Alive"
+    },
+    {
+      "id": 6,
+      "age": null,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Abe Simpson II",
+      "occupation": "Retired",
+      "portrait_path": "/character/6.webp",
+      "phrases": [
+        "Ahh!",
+        "Im Santa? Oh, now Ill never die!",
+        "Hi, David, Im Grampa!",
+        "They pay me $800 a week to tell a cat and mouse what to do!"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 7,
+      "age": null,
+      "birthdate": null,
+      "gender": "Female",
+      "name": "Patty Bouvier",
+      "occupation": "Springfield DMV Employee",
+      "portrait_path": "/character/7.webp",
+      "phrases": [
+        "Some days at the DMV, we dont let the line move at all. We call those weekdays.",
+        "Hell no! I like girls!"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 8,
+      "age": null,
+      "birthdate": null,
+      "gender": "Female",
+      "name": "Selma Bouvier",
+      "occupation": "Employee of Department of Motor Vehicles",
+      "portrait_path": "/character/8.webp",
+      "phrases": ["Hows my blubber in-law?", "Drivers License is on me!"],
+      "status": "Alive"
+    },
+    {
+      "id": 9,
+      "age": 60,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Ned Flanders",
+      "occupation": "The Leftorium (formerly)",
+      "portrait_path": "/character/9.webp",
+      "phrases": ["Howdily-doodily, neighborino!", "Hi-diddly-ho!"],
+      "status": "Alive"
+    },
+    {
+      "id": 10,
+      "age": null,
+      "birthdate": null,
+      "gender": "Female",
+      "name": "Maude Flanders",
+      "occupation": "Housewife (former)",
+      "portrait_path": "/character/10.webp",
+      "phrases": [
+        "I dont judge Homer or Marge. Thats for vengeful God to do.",
+        "Neddy doesnt believe in insurance. He considers it a form of gambling.",
+        "I know. They make you uncomfortable.",
+        "In many ways, Maude Flanders was a supporting player in our lives. She didnt grab our attention with memorable catchphrases, or comical accents. But, whether you noticed her or not, Maude was always there but then she was still alive in episode 6",
+        "Excuse me, Edna. I dont think were talking about love here. Were talking about S-E-X in front of the C-H-I-L-D-R-E-N."
+      ],
+      "status": "Deceased"
+    },
+    {
+      "id": 11,
+      "age": null,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Rod Flanders",
+      "occupation": "Student at Springfield Elementary School",
+      "portrait_path": "/character/11.webp",
+      "phrases": ["Yay!!", "What does gay mean??"],
+      "status": "Alive"
+    },
+    {
+      "id": 12,
+      "age": null,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Todd Flanders",
+      "occupation": "Student at Springfield Elementary SchoolStudent at a religious private school (formerly)",
+      "portrait_path": "/character/12.webp",
+      "phrases": ["I said I dont want any damn vegetables!"],
+      "status": "Alive"
+    },
+    {
+      "id": 13,
+      "age": 1381,
+      "birthdate": "1886-09-15",
+      "gender": "Male",
+      "name": "Charles Montgomery Burns",
+      "occupation": "Owner & Director of the Springfield Nuclear Power Plant",
+      "portrait_path": "/character/13.webp",
+      "phrases": [
+        "Excellent!",
+        "Release the hounds!",
+        "Smithers!",
+        "Smithers, who is this ?",
+        "Simpson, eh?",
+        "Youre fired!",
+        "Oh, Fiddlesticks!"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 14,
+      "age": null,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Waylon Smithers, Jr.",
+      "occupation": "Assistant to Mr. Burns",
+      "portrait_path": "/character/14.webp",
+      "phrases": [
+        "Yes, sir?",
+        "Thats Homer Simpson, sir - one of your [put-down]s from Sector 7G.",
+        "Actually, I value every second were together: from the moment I squeeze his orange juice in the morning, till I... tuck him in at night. Hes not just my boss, hes my best friend, too.",
+        "All right, thats it. You know, I used to wonder why Mr. Burns hated humanity. Now I know. You open your heart and they mock your very decency."
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 15,
+      "age": null,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Krusty the Clown",
+      "occupation": "Television personality",
+      "portrait_path": "/character/15.webp",
+      "phrases": [
+        "Hey hey, kids!",
+        "Hoohoohoohahaha!",
+        "Why you little!",
+        "Im Krusty The Clown! And I Love you!"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 16,
+      "age": null,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Moe Szyslak",
+      "occupation": "Bartender and Owner of Moe's Tavern",
+      "portrait_path": "/character/16.webp",
+      "phrases": [
+        "How ya doing?",
+        "Whaaaaaaat?",
+        "Whats-a-matter, Homer?",
+        "When I get a hold of you, Ill (insert threat here)",
+        "Hi ya, Midge.",
+        "Mike Rotch",
+        "Im a stupid moron with an ugly  face, and a big butt, and my butt smells, and I like to kiss my own butt."
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 17,
+      "age": 47,
+      "birthdate": null,
+      "gender": "Male",
+      "name": "Apu Nahasapeemapetilon",
+      "occupation": "Owner of the Kwik-E-Mart",
+      "portrait_path": "/character/17.webp",
+      "phrases": [
+        "Thank you! Come again.",
+        "That is a great dishonor to my ancestors and my God, but okay.",
+        "Okay, whatever.",
+        "Alright.",
+        "I cant believe you dont shut up!",
+        "(Referring to Homer) He slept, he stole, he was rude to the customers. Still, there goes the best-damned employee a convenience store ever had."
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 18,
+      "age": 57,
+      "birthdate": "1953-07-08",
+      "gender": "Male",
+      "name": "Seymour Skinner",
+      "occupation": "Principal of Springfield Elementary School",
+      "portrait_path": "/character/18.webp",
+      "phrases": [],
+      "status": "Alive"
+    },
+    {
+      "id": 19,
+      "age": null,
+      "birthdate": "1945-03-31",
+      "gender": "Male",
+      "name": "Gary Chalmers",
+      "occupation": "Superintendent of Springfield Elementary School",
+      "portrait_path": "/character/19.webp",
+      "phrases": [
+        "SKINNERRRRRR!",
+        "Aurora Borealis? At this time of year, at this time of day, in this part of the country, localized ENTIRELY within your kitchen..?"
+      ],
+      "status": "Alive"
+    },
+    {
+      "id": 20,
+      "age": null,
+      "birthdate": null,
+      "gender": "Female",
+      "name": "Edna Krabappel",
+      "occupation": "Fourth grade teacher at Springfield Elementary School (formerly)",
+      "portrait_path": "/character/20.webp",
+      "phrases": [
+        "Ha!",
+        "These tests will have no effect on your grades. They merely determine your future social status and financial success. If any.",
+        "Do what I mean, not what I say.",
+        "No matter what youve done, I always thought there was a spark of decency in you, Bart Simpson, but I was wrong. I never thought Id say this to a child, but you are bad on the inside.",
+        "Remember: if you can teach one kid one thing, then today will be a success..."
+      ],
+      "status": "Deceased"
+    }
+  ]
+}
