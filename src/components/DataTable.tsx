@@ -1,4 +1,7 @@
+import { Search, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -12,10 +15,12 @@ import { Pagination } from "@/components/Pagination";
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
+  type ColumnFiltersState,
   type PaginationState,
   type RowSelectionState,
   type SortingState,
@@ -37,6 +42,8 @@ export function DataTable<TData, TValue>({
   defaultSorting = [],
   pageSizes = [5, 10, 20, 50],
 }: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState<string>("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: defaultPageSize,
@@ -49,12 +56,18 @@ export function DataTable<TData, TValue>({
     data: data ?? [],
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    globalFilterFn: "includesString",
+    onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     state: {
+      globalFilter: globalFilter,
+      columnFilters: columnFilters,
       pagination: pagination,
       rowSelection: rowSelection,
       sorting: sorting,
@@ -65,9 +78,14 @@ export function DataTable<TData, TValue>({
   //   console.log("Selected rows:", table.getSelectedRowModel().rows.length);
   // }, [rowSelection, table]);
 
+  function handleClearSearch(): void {
+    table.setGlobalFilter("");
+    setGlobalFilter("");
+  }
+
   return (
     <section className="flex flex-col gap-3">
-      <div>
+      <div className="flex items-center gap-5 justify-between">
         <Button
           onClick={() =>
             console.log(
@@ -78,6 +96,25 @@ export function DataTable<TData, TValue>({
         >
           Action
         </Button>
+        <div className="relative">
+          <Search className="stroke-primary absolute top-1/2 left-5 h-4 w-4 -translate-x-1/2 -translate-y-1/2" />
+          <Input
+            value={globalFilter}
+            className="w-55 pl-9"
+            onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+            placeholder="Buscar..."
+          />
+          {globalFilter ? (
+            <Button
+              className="active:not-aria-[haspopup]:-translate-y-1/2 absolute top-1/2 -right-1.5 -translate-x-1/2 -translate-y-1/2"
+              onClick={handleClearSearch}
+              size="icon-xs"
+              variant="ghost"
+            >
+              <X />
+            </Button>
+          ) : null}
+        </div>
       </div>
       <Table className="dark:bg-muted table-fixed w-full">
         <TableHeader className="dark:bg-primary-foreground bg-neutral-100">
@@ -103,6 +140,35 @@ export function DataTable<TData, TValue>({
                   </TableHead>
                 );
               })}
+            </TableRow>
+          ))}
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow
+              className="dark:bg-background bg-background hover:bg-background"
+              key={`${headerGroup.id}-filters`}
+            >
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={`${header.id}-filter`}
+                  className="py-1.5"
+                  style={{
+                    minWidth: header.column.columnDef.minSize,
+                    width: header.column.getSize(),
+                    maxWidth: header.column.columnDef.maxSize,
+                  }}
+                >
+                  {header.column.getCanFilter() ? (
+                    <Input
+                      className="h-7 text-xs max-w-36"
+                      onChange={(e) =>
+                        header.column.setFilterValue(e.target.value)
+                      }
+                      placeholder="Buscar..."
+                      value={(header.column.getFilterValue() as string) ?? ""}
+                    />
+                  ) : null}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
