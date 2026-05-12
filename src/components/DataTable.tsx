@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -16,6 +17,7 @@ import {
   useReactTable,
   type ColumnDef,
   type PaginationState,
+  type RowSelectionState,
   type SortingState,
 } from "@tanstack/react-table";
 import { useState } from "react";
@@ -39,7 +41,7 @@ export function DataTable<TData, TValue>({
     pageIndex: 0,
     pageSize: defaultPageSize,
   });
-
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -47,18 +49,36 @@ export function DataTable<TData, TValue>({
     data: data ?? [],
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
     state: {
       pagination: pagination,
+      rowSelection: rowSelection,
       sorting: sorting,
     },
   });
 
+  // useEffect(() => {
+  //   console.log("Selected rows:", table.getSelectedRowModel().rows.length);
+  // }, [rowSelection, table]);
+
   return (
-    <section>
+    <section className="flex flex-col gap-3">
+      <div>
+        <Button
+          onClick={() =>
+            console.log(
+              `Items: ${JSON.stringify(table.getFilteredSelectedRowModel().rows.length)}`,
+            )
+          }
+          variant="secondary"
+        >
+          Action
+        </Button>
+      </div>
       <Table className="dark:bg-muted table-fixed w-full">
         <TableHeader className="dark:bg-primary-foreground bg-neutral-100">
           {table.getHeaderGroups().map((headerGroup) => (
