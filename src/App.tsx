@@ -1,9 +1,9 @@
+import { DataTable } from "@/components/DataTable";
+import { SortableHeader } from "@/components/SortableHeader";
+
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { DataService, type ICharacter } from "@/services/data.service";
-import { DataTable } from "@/components/DataTable";
-
-import { SortableHeader } from "@/components/SortableHeader";
 
 export default function App() {
   const data = DataService.get();
@@ -11,19 +11,25 @@ export default function App() {
   const columns: ColumnDef<ICharacter>[] = [
     {
       accessorKey: "id",
+      maxSize: 40,
+      minSize: 40,
       header: ({ column }) => (
         <SortableHeader column={column}>ID</SortableHeader>
       ),
     },
     {
       accessorKey: "name",
+      maxSize: 80,
+      minSize: 80,
       header: ({ column }) => (
         <SortableHeader column={column}>Nombre</SortableHeader>
       ),
     },
     {
       accessorKey: "occupation",
-      header: "Ocupación",
+      header: ({ column }) => (
+        <SortableHeader column={column}>Ocupación</SortableHeader>
+      ),
     },
   ];
 
@@ -41,7 +47,11 @@ export default function App() {
           <h2 className="text-2xl font-semibold tracking-tight">
             Personajes de los Simpsons
           </h2>
-          <DataTable data={data} columns={columns} />
+          <DataTable
+            data={data}
+            columns={columns}
+            defaultSorting={[{ id: "name", desc: false }]}
+          />
         </section>
       </main>
     </div>
