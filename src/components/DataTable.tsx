@@ -1,10 +1,10 @@
 import { FilePdf } from "@/components/icons/FilePdf";
-import { GripVertical, Search, X } from "lucide-react";
+import { GripVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DraggableColumnHeader } from "@/components/DraggableColumnHeader";
-import { Input } from "@/components/ui/input";
 import { Pagination } from "@/components/Pagination";
+import { SearchInput } from "@/components/SearchInput";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { DndContext, DragOverlay, closestCenter, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
@@ -114,12 +114,6 @@ export function DataTable<TData, TValue>({
     setActiveColumnId(null);
   }
 
-  // Clear global filter
-  function handleClearSearch(): void {
-    table.setGlobalFilter("");
-    setGlobalFilter("");
-  }
-
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-end gap-5">
@@ -139,25 +133,14 @@ export function DataTable<TData, TValue>({
         >
           <FilePdf className="size-5" />
         </Button>
-        <div className="relative">
-          <Search className="stroke-primary absolute top-1/2 left-5 h-4 w-4 -translate-x-1/2 -translate-y-1/2" />
-          <Input
-            value={globalFilter}
-            className="w-55 pl-9"
-            onChange={(e) => table.setGlobalFilter(String(e.target.value))}
-            placeholder="Buscar..."
-          />
-          {globalFilter ? (
-            <Button
-              className="absolute top-1/2 -right-1.5 -translate-x-1/2 -translate-y-1/2 active:not-aria-[haspopup]:-translate-y-1/2"
-              onClick={handleClearSearch}
-              size="icon-xs"
-              variant="ghost"
-            >
-              <X />
-            </Button>
-          ) : null}
-        </div>
+        <SearchInput
+          onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+          onClear={() => {
+            table.setGlobalFilter("");
+            setGlobalFilter("");
+          }}
+          value={globalFilter}
+        />
       </div>
       <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Table className="dark:bg-muted w-full table-fixed">
@@ -206,11 +189,14 @@ export function DataTable<TData, TValue>({
                     }}
                   >
                     {header.column.getCanFilter() ? (
-                      <Input
-                        value={(header.column.getFilterValue() as string) ?? ""}
+                      <SearchInput
+                        className="w-35"
                         onChange={(e) => header.column.setFilterValue(e.target.value)}
-                        placeholder="Buscar..."
-                        className="h-7 max-w-50 text-xs"
+                        onClear={() => {
+                          header.column.setFilterValue("");
+                        }}
+                        size="sm"
+                        value={(header.column.getFilterValue() as string) ?? ""}
                       />
                     ) : null}
                   </TableHead>
