@@ -28,9 +28,11 @@ export function exportTableToPdf<T>({
     y += 8;
   }
 
-  const columns = table.getAllLeafColumns().filter(
-    (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disablePdfExport,
-  );
+  const columns = table
+    .getAllLeafColumns()
+    .filter(
+      (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disablePdfExport,
+    );
   const headerRow = columns.map((col) => headers[col.id] ?? col.id);
   const selectedRows = table.getSelectedRowModel().rows;
   const rows = selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
@@ -53,7 +55,7 @@ export function exportTableToPdf<T>({
     body,
     startY: y,
     styles: { fontSize: 8 },
-    theme: "plain",
+    theme: "striped",
   });
 
   doc.save(filename);
