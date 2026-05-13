@@ -1,3 +1,4 @@
+import { FilePdf } from "@/components/icons/FilePdf";
 import { GripVertical, Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,11 +24,19 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 
+import { exportTableToPdf, type TPdfFormatter } from "@/utils/export-table-pdf.utils";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
   defaultPageSize?: number;
   defaultSorting?: SortingState;
+  exportPdfConfig?: {
+    filename?: string;
+    formatters?: Record<string, TPdfFormatter<TData>>;
+    headers?: Record<string, string>;
+    title?: string;
+  };
   pageSizes?: number[];
 }
 
@@ -36,6 +45,7 @@ export function DataTable<TData, TValue>({
   data,
   defaultPageSize = 5,
   defaultSorting = [],
+  exportPdfConfig,
   pageSizes = [5, 10, 20, 50],
 }: DataTableProps<TData, TValue>) {
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
@@ -104,12 +114,22 @@ export function DataTable<TData, TValue>({
 
   return (
     <section className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-5">
+      <div className="flex items-center justify-end gap-5">
         <Button
-          onClick={() => console.log(`Items: ${JSON.stringify(table.getFilteredSelectedRowModel().rows.length)}`)}
-          variant="secondary"
+          className="text-muted-foreground hover:bg-muted"
+          size="icon"
+          variant="outline"
+          onClick={() =>
+            exportTableToPdf({
+              filename: exportPdfConfig?.filename,
+              formatters: exportPdfConfig?.formatters,
+              headers: exportPdfConfig?.headers,
+              table,
+              title: exportPdfConfig?.title,
+            })
+          }
         >
-          Action
+          <FilePdf className="size-5" />
         </Button>
         <div className="relative">
           <Search className="stroke-primary absolute top-1/2 left-5 h-4 w-4 -translate-x-1/2 -translate-y-1/2" />
@@ -137,13 +157,31 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <SortableContext
                 key={headerGroup.id}
-                items={headerGroup.headers.map((h) => h.column.id)}
+                items={headerGroup.headers
+                  .filter(
+                    (h) => !(h.column.columnDef.meta as { disableDragging?: boolean } | undefined)?.disableDragging,
+                  )
+                  .map((h) => h.column.id)}
                 strategy={rectSortingStrategy}
               >
                 <TableRow>
-                  {headerGroup.headers.map((header) => (
-                    <DraggableColumnHeader header={header} key={header.id} />
-                  ))}
+                  {headerGroup.headers.map((header) =>
+                    (header.column.columnDef.meta as { disableDragging?: boolean } | undefined)?.disableDragging ? (
+                      <TableHead
+                        key={header.id}
+                        className="py-2.5"
+                        style={{
+                          minWidth: header.column.columnDef.minSize,
+                          width: header.column.getSize(),
+                          maxWidth: header.column.columnDef.maxSize,
+                        }}
+                      >
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                      </TableHead>
+                    ) : (
+                      <DraggableColumnHeader header={header} key={header.id} />
+                    ),
+                  )}
                 </TableRow>
               </SortableContext>
             ))}
@@ -173,48 +211,48 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    className="whitespace-normal"
-                    style={{
-                      minWidth: cell.column.columnDef.minSize,
-                      width: cell.column.getSize(),
-                    }}
-                    key={cell.id}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      className="whitespace-normal"
+                      style={{
+                        minWidth: cell.column.columnDef.minSize,
+                        width: cell.column.getSize(),
+                      }}
+                      key={cell.id}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  Sin resultados
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                Sin resultados
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <DragOverlay>
-        {activeColumnId ? (
-          <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 shadow-lg">
-            <GripVertical className="text-muted-foreground h-4 w-4" />
-            {table
-              .getHeaderGroups()
-              .map((hg) =>
-                hg.headers
-                  .filter((h) => h.column.id === activeColumnId)
-                  .map((h) => <span key={h.id}>{flexRender(h.column.columnDef.header, h.getContext())}</span>),
-              )}
-          </div>
-        ) : null}
-      </DragOverlay>
-    </DndContext>
-    <Pagination table={table} pageSizes={pageSizes} />
+            )}
+          </TableBody>
+        </Table>
+        <DragOverlay>
+          {activeColumnId ? (
+            <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 shadow-lg">
+              <GripVertical className="text-muted-foreground h-4 w-4" />
+              {table
+                .getHeaderGroups()
+                .map((hg) =>
+                  hg.headers
+                    .filter((h) => h.column.id === activeColumnId)
+                    .map((h) => <span key={h.id}>{flexRender(h.column.columnDef.header, h.getContext())}</span>),
+                )}
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
+      <Pagination table={table} pageSizes={pageSizes} />
     </section>
   );
 }
