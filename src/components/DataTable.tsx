@@ -1,5 +1,6 @@
 import { BrushCleaning, GripVertical } from "lucide-react";
 import { FilePdf } from "@/components/icons/FilePdf";
+import { FileXls } from "@/components/icons/FileXls";
 
 import { Button } from "@/components/ui/button";
 import { DraggableColumnHeader } from "@/components/DraggableColumnHeader";
@@ -26,6 +27,7 @@ import { useShallow } from "zustand/shallow";
 import { useState } from "react";
 
 import { exportTableToPdf, type TPdfFormatter } from "@/utils/export-table-pdf.utils";
+import { exportTableToXls, type TXlsFormatter } from "@/utils/export-table-xls.utils";
 import { useTableStore } from "@/stores/table.store";
 
 interface DataTableProps<TData, TValue> {
@@ -39,6 +41,12 @@ interface DataTableProps<TData, TValue> {
     headers?: Record<string, string>;
     title?: string;
   };
+  exportXlsConfig?: {
+    filename?: string;
+    formatters?: Record<string, TXlsFormatter<TData>>;
+    headers?: Record<string, string>;
+    sheetName?: string;
+  };
   pageSizes?: number[];
   storageKey: string;
 }
@@ -49,6 +57,7 @@ export function DataTable<TData, TValue>({
   defaultPageSize = 5,
   defaultSorting = [],
   exportPdfConfig,
+  exportXlsConfig,
   pageSizes = [5, 10, 20, 50],
   storageKey,
 }: DataTableProps<TData, TValue>) {
@@ -134,6 +143,22 @@ export function DataTable<TData, TValue>({
             }
           >
             <FilePdf className="size-5" />
+          </Button>
+          <Button
+            className="text-muted-foreground hover:bg-muted"
+            size="icon"
+            variant="outline"
+            onClick={() =>
+              exportTableToXls({
+                filename: exportXlsConfig?.filename,
+                formatters: exportXlsConfig?.formatters,
+                headers: exportXlsConfig?.headers,
+                sheetName: exportXlsConfig?.sheetName,
+                table,
+              })
+            }
+          >
+            <FileXls className="size-5" />
           </Button>
           <Button
             className="text-muted-foreground hover:bg-muted"
