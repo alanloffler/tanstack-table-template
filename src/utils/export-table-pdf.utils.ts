@@ -28,7 +28,9 @@ export function exportTableToPdf<T>({
     y += 8;
   }
 
-  const columns = table.getAllLeafColumns().filter((col) => col.getIsVisible() && col.id !== "actions");
+  const columns = table.getAllLeafColumns().filter(
+    (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disablePdfExport,
+  );
   const headerRow = columns.map((col) => headers[col.id] ?? col.id);
   const selectedRows = table.getSelectedRowModel().rows;
   const rows = selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
