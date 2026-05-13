@@ -72,7 +72,12 @@ export default function App() {
       <main className="mx-auto max-w-6xl px-6 py-10">
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold tracking-tight">Personajes de los Simpsons</h2>
-          <DataTable data={data} columns={columns} defaultSorting={[{ id: "name", desc: false }]} />
+          <DataTable
+            columns={columns}
+            data={data}
+            defaultSorting={[{ id: "name", desc: false }]}
+            storageKey="characters"
+          />
         </section>
       </main>
     </div>
