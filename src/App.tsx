@@ -15,7 +15,7 @@ export default function App() {
       size: 20,
       enableColumnFilter: false,
       meta: {
-        disablePdfExport: true,
+        disableExport: true,
         disableDragging: true,
       },
       header: ({ table }) => (
@@ -80,6 +80,13 @@ export default function App() {
             columns={columns}
             defaultSorting={[{ id: "name", desc: false }]}
             exportPdfConfig={{
+              headers: {
+                id: "ID",
+                name: "Nombre",
+                occupation: "Ocupación",
+              },
+            }}
+            exportXlsConfig={{
               headers: {
                 id: "ID",
                 name: "Nombre",
