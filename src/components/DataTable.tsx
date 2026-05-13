@@ -1,5 +1,5 @@
+import { BrushCleaning, GripVertical } from "lucide-react";
 import { FilePdf } from "@/components/icons/FilePdf";
-import { GripVertical } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DraggableColumnHeader } from "@/components/DraggableColumnHeader";
@@ -61,7 +61,8 @@ export function DataTable<TData, TValue>({
   });
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
-  const columnOrder = useTableStore(useShallow((state) => state.columnOrder[storageKey] ?? []));
+  const clearTableStore = useTableStore((state) => state.clearTable);
+  const columnOrder = useTableStore(useShallow((state) => state.tables[storageKey]?.columnOrder ?? []));
   const setStoredColumnOrder = useTableStore((state) => state.setColumnOrder);
 
   // eslint-disable-next-line react-hooks/incompatible-library
@@ -117,22 +118,32 @@ export function DataTable<TData, TValue>({
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-end gap-5">
-        <Button
-          className="text-muted-foreground hover:bg-muted"
-          size="icon"
-          variant="outline"
-          onClick={() =>
-            exportTableToPdf({
-              filename: exportPdfConfig?.filename,
-              formatters: exportPdfConfig?.formatters,
-              headers: exportPdfConfig?.headers,
-              table,
-              title: exportPdfConfig?.title,
-            })
-          }
-        >
-          <FilePdf className="size-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            className="text-muted-foreground hover:bg-muted"
+            size="icon"
+            variant="outline"
+            onClick={() =>
+              exportTableToPdf({
+                filename: exportPdfConfig?.filename,
+                formatters: exportPdfConfig?.formatters,
+                headers: exportPdfConfig?.headers,
+                table,
+                title: exportPdfConfig?.title,
+              })
+            }
+          >
+            <FilePdf className="size-5" />
+          </Button>
+          <Button
+            className="text-muted-foreground hover:bg-muted"
+            onClick={() => clearTableStore(storageKey)}
+            size="icon"
+            variant="outline"
+          >
+            <BrushCleaning />
+          </Button>
+        </div>
         <SearchInput
           onChange={(e) => table.setGlobalFilter(String(e.target.value))}
           onClear={() => {
