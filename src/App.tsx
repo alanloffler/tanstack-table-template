@@ -14,7 +14,10 @@ export default function App() {
       id: "select-col",
       size: 20,
       enableColumnFilter: false,
-      meta: { disableDragging: true },
+      meta: {
+        disablePdfExport: true,
+        disableDragging: true,
+      },
       header: ({ table }) => (
         <Checkbox
           checked={table.getIsAllRowsSelected() ? true : table.getIsSomeRowsSelected() ? "indeterminate" : false}
@@ -33,6 +36,7 @@ export default function App() {
       accessorKey: "id",
       size: 40,
       enableColumnFilter: false,
+      meta: { disableDragging: true },
       header: ({ column }) => (
         <div className="flex items-center gap-1">
           <span>ID</span>
@@ -43,7 +47,6 @@ export default function App() {
     {
       accessorKey: "name",
       size: 80,
-      meta: { disableDragging: true },
       header: ({ column }) => (
         <div className="flex items-center gap-1">
           <span>Nombre</span>
@@ -73,8 +76,8 @@ export default function App() {
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold tracking-tight">Personajes de los Simpsons</h2>
           <DataTable
-            columns={columns}
             data={data}
+            columns={columns}
             defaultSorting={[{ id: "name", desc: false }]}
             storageKey="characters"
           />
