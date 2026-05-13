@@ -13,6 +13,8 @@ export default function App() {
     {
       id: "select-col",
       size: 20,
+      enableColumnFilter: false,
+      meta: { disableDragging: true },
       header: ({ table }) => (
         <Checkbox
           checked={table.getIsAllRowsSelected() ? true : table.getIsSomeRowsSelected() ? "indeterminate" : false}
@@ -41,6 +43,7 @@ export default function App() {
     {
       accessorKey: "name",
       size: 80,
+      meta: { disableDragging: true },
       header: ({ column }) => (
         <div className="flex items-center gap-1">
           <span>Nombre</span>
