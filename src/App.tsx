@@ -79,6 +79,13 @@ export default function App() {
             data={data}
             columns={columns}
             defaultSorting={[{ id: "name", desc: false }]}
+            exportPdfConfig={{
+              headers: {
+                id: "ID",
+                name: "Nombre",
+                occupation: "Ocupación",
+              },
+            }}
             storageKey="characters"
           />
         </section>
