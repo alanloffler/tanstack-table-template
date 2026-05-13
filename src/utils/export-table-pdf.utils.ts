@@ -31,7 +31,7 @@ export function exportTableToPdf<T>({
   const columns = table
     .getAllLeafColumns()
     .filter(
-      (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disablePdfExport,
+      (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disableExport,
     );
   const headerRow = columns.map((col) => headers[col.id] ?? col.id);
   const selectedRows = table.getSelectedRowModel().rows;
