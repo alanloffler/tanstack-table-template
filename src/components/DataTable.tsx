@@ -131,8 +131,8 @@ export function DataTable<TData, TValue>({
           ) : null}
         </div>
       </div>
-      <Table className="dark:bg-muted w-full table-fixed">
-        <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <Table className="dark:bg-muted w-full table-fixed">
           <TableHeader className="dark:bg-primary-foreground bg-neutral-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <SortableContext
@@ -172,22 +172,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <DragOverlay>
-            {activeColumnId ? (
-              <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 shadow-lg">
-                <GripVertical className="text-muted-foreground h-4 w-4" />
-                {table
-                  .getHeaderGroups()
-                  .map((hg) =>
-                    hg.headers
-                      .filter((h) => h.column.id === activeColumnId)
-                      .map((h) => <span key={h.id}>{flexRender(h.column.columnDef.header, h.getContext())}</span>),
-                  )}
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
-        <TableBody>
+          <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
@@ -214,7 +199,22 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <Pagination table={table} pageSizes={pageSizes} />
+      <DragOverlay>
+        {activeColumnId ? (
+          <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 shadow-lg">
+            <GripVertical className="text-muted-foreground h-4 w-4" />
+            {table
+              .getHeaderGroups()
+              .map((hg) =>
+                hg.headers
+                  .filter((h) => h.column.id === activeColumnId)
+                  .map((h) => <span key={h.id}>{flexRender(h.column.columnDef.header, h.getContext())}</span>),
+              )}
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
+    <Pagination table={table} pageSizes={pageSizes} />
     </section>
   );
 }
