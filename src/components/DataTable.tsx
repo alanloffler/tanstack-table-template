@@ -22,9 +22,11 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { useShallow } from "zustand/shallow";
 import { useState } from "react";
 
 import { exportTableToPdf, type TPdfFormatter } from "@/utils/export-table-pdf.utils";
+import { useTableStore } from "@/stores/table.store";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,6 +40,7 @@ interface DataTableProps<TData, TValue> {
     title?: string;
   };
   pageSizes?: number[];
+  storageKey: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -47,9 +50,9 @@ export function DataTable<TData, TValue>({
   defaultSorting = [],
   exportPdfConfig,
   pageSizes = [5, 10, 20, 50],
+  storageKey,
 }: DataTableProps<TData, TValue>) {
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
-  const [columnOrder, setColumnOrder] = useState<string[]>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [pagination, setPagination] = useState<PaginationState>({
@@ -58,6 +61,8 @@ export function DataTable<TData, TValue>({
   });
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
+  const columnOrder = useTableStore(useShallow((state) => state.columnOrder[storageKey] ?? []));
+  const setStoredColumnOrder = useTableStore((state) => state.setColumnOrder);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -68,7 +73,10 @@ export function DataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     globalFilterFn: "includesString",
-    onColumnOrderChange: setColumnOrder,
+    onColumnOrderChange: (updaterOrValue) => {
+      const newOrder = typeof updaterOrValue === "function" ? updaterOrValue(columnOrder) : updaterOrValue;
+      setStoredColumnOrder(storageKey, newOrder);
+    },
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
     onRowSelectionChange: setRowSelection,
@@ -102,7 +110,7 @@ export function DataTable<TData, TValue>({
     const newIndex = columnIds.indexOf(over.id as string);
     if (oldIndex === -1 || newIndex === -1) return;
 
-    setColumnOrder(arrayMove(columnIds, oldIndex, newIndex));
+    setStoredColumnOrder(storageKey, arrayMove(columnIds, oldIndex, newIndex));
     setActiveColumnId(null);
   }
 
