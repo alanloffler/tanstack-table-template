@@ -247,7 +247,7 @@ export function DataTable<TData, TValue>({
         </Table>
         <DragOverlay>
           {activeColumnId ? (
-            <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 shadow-lg">
+            <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 text-sm shadow-lg">
               <GripVertical className="text-muted-foreground h-4 w-4" />
               {table
                 .getHeaderGroups()
