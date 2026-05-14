@@ -1,10 +1,12 @@
-import { BrushCleaning, GripVertical } from "lucide-react";
 import { FilePdf } from "@/components/icons/FilePdf";
 import { FileXls } from "@/components/icons/FileXls";
+import { Columns3Cog, GripVertical, RefreshCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DraggableColumnHeader } from "@/components/DraggableColumnHeader";
 import { Pagination } from "@/components/Pagination";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SearchInput } from "@/components/SearchInput";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -38,13 +40,11 @@ interface DataTableProps<TData, TValue> {
   exportPdfConfig?: {
     filename?: string;
     formatters?: Record<string, TPdfFormatter<TData>>;
-    headers?: Record<string, string>;
     title?: string;
   };
   exportXlsConfig?: {
     filename?: string;
     formatters?: Record<string, TXlsFormatter<TData>>;
-    headers?: Record<string, string>;
     sheetName?: string;
   };
   pageSizes?: number[];
@@ -72,7 +72,9 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
   const clearTableStore = useTableStore((state) => state.clearTable);
   const columnOrder = useTableStore(useShallow((state) => state.tables[storageKey]?.columnOrder ?? []));
+  const columnVisibility = useTableStore(useShallow((state) => state.tables[storageKey]?.columnVisibility ?? {}));
   const setStoredColumnOrder = useTableStore((state) => state.setColumnOrder);
+  const setColumnVisibility = useTableStore((state) => state.setColumnVisibility);
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
@@ -92,8 +94,13 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: (updaterOrValue) => {
+      const newVisibility = typeof updaterOrValue === "function" ? updaterOrValue(columnVisibility) : updaterOrValue;
+      setColumnVisibility(storageKey, newVisibility);
+    },
     state: {
       columnOrder: columnOrder,
+      columnVisibility: columnVisibility,
       globalFilter: globalFilter,
       columnFilters: columnFilters,
       pagination: pagination,
@@ -136,7 +143,6 @@ export function DataTable<TData, TValue>({
               exportTableToPdf({
                 filename: exportPdfConfig?.filename,
                 formatters: exportPdfConfig?.formatters,
-                headers: exportPdfConfig?.headers,
                 table,
                 title: exportPdfConfig?.title,
               })
@@ -152,7 +158,6 @@ export function DataTable<TData, TValue>({
               exportTableToXls({
                 filename: exportXlsConfig?.filename,
                 formatters: exportXlsConfig?.formatters,
-                headers: exportXlsConfig?.headers,
                 sheetName: exportXlsConfig?.sheetName,
                 table,
               })
@@ -166,8 +171,30 @@ export function DataTable<TData, TValue>({
             size="icon"
             variant="outline"
           >
-            <BrushCleaning />
+            <RefreshCcw />
           </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button className="text-muted-foreground hover:bg-muted" size="icon" variant="outline">
+                <Columns3Cog />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="max-h-50 w-fit overflow-y-auto">
+              {table.getAllLeafColumns().map((column, idx) => (
+                <>
+                  {idx > 0 && (
+                    <label key={column.id} className="flex items-center gap-2 text-sm">
+                      <Checkbox
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
+                      />
+                      {column.id}
+                    </label>
+                  )}
+                </>
+              ))}
+            </PopoverContent>
+          </Popover>
         </div>
         <SearchInput
           onChange={(e) => table.setGlobalFilter(String(e.target.value))}
