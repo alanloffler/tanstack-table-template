@@ -22,8 +22,12 @@ class DataModuleService {
     return DataModuleService.instance;
   }
 
-  public get(): ICharacter[] {
-    return charactersData.results as ICharacter[];
+  public async get(delay: number): Promise<ICharacter[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(charactersData.results as ICharacter[]);
+      }, delay);
+    });
   }
 }
 
