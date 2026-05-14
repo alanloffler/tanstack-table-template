@@ -11,7 +11,8 @@ export default function App() {
 
   const columns: ColumnDef<ICharacter>[] = [
     {
-      id: "select-col",
+      accessorKey: "select-col",
+      id: "Seleccionar",
       size: 20,
       enableColumnFilter: false,
       meta: {
@@ -20,6 +21,7 @@ export default function App() {
       },
       header: ({ table }) => (
         <Checkbox
+          className="bg-background border-foreground/30"
           checked={table.getIsAllRowsSelected() ? true : table.getIsSomeRowsSelected() ? "indeterminate" : false}
           onCheckedChange={(checked) => table.toggleAllRowsSelected(!!checked)}
         />
@@ -81,7 +83,7 @@ export default function App() {
           <DataTable
             data={data}
             columns={columns}
-            defaultSorting={[{ id: "name", desc: false }]}
+            defaultSorting={[{ id: "Nombre", desc: false }]}
             storageKey="characters"
           />
         </section>
