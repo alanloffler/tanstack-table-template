@@ -1,3 +1,6 @@
+import { Moon, Sun } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable, type ITableOptions } from "@/components/DataTable";
@@ -7,6 +10,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 
 import { DataService, type ICharacter } from "@/services/data.service";
+import { useTheme } from "@/providers/theme.context";
 
 const INIT_OPTS: ITableOptions = {
   columnSearch: true,
@@ -20,6 +24,7 @@ const INIT_OPTS: ITableOptions = {
 export default function App() {
   const [tableOptions, setTableOptions] = useState(INIT_OPTS);
   const data = DataService.get();
+  const { theme, setTheme } = useTheme();
 
   const columns: ColumnDef<ICharacter>[] = [
     {
@@ -96,8 +101,23 @@ export default function App() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <header className="border-border border-b">
-        <div className="mx-auto flex h-14 max-w-6xl items-center px-6">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <h1 className="text-lg font-semibold tracking-tight">Tanstack Table</h1>
+          <Button
+            onClick={(e) => {
+              document.documentElement.style.setProperty("--x", `${e.clientX}px`);
+              document.documentElement.style.setProperty("--y", `${e.clientY}px`);
+              document.startViewTransition(() => setTheme(theme === "dark" ? "light" : "dark"));
+            }}
+            size="icon-sm"
+            variant="outline"
+          >
+            {theme === "dark" ? (
+              <Sun className="stroke-yellow-400" strokeWidth={1.5} />
+            ) : (
+              <Moon className="fill-neutral-200 stroke-neutral-400" strokeWidth={1.5} />
+            )}
+          </Button>
         </div>
       </header>
       <main className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-8">
