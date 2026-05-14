@@ -8,6 +8,7 @@ import { DraggableColumnHeader } from "@/components/DraggableColumnHeader";
 import { Pagination } from "@/components/Pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SearchInput } from "@/components/SearchInput";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -26,8 +27,8 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import { useState } from "react";
 
 import { exportTableToPdf, type TPdfFormatter } from "@/utils/export-table-pdf.utils";
 import { exportTableToXls, type TXlsFormatter } from "@/utils/export-table-xls.utils";
@@ -57,6 +58,7 @@ interface DataTableProps<TData, TValue> {
     formatters?: Record<string, TXlsFormatter<TData>>;
     sheetName?: string;
   };
+  loading?: boolean;
   options?: ITableOptions;
   pageSizes?: number[];
   storageKey: string;
@@ -69,6 +71,7 @@ export function DataTable<TData, TValue>({
   defaultSorting = [],
   exportPdfConfig,
   exportXlsConfig,
+  loading,
   options,
   pageSizes = [5, 10, 20, 50],
   storageKey,
@@ -88,10 +91,25 @@ export function DataTable<TData, TValue>({
   const setStoredColumnOrder = useTableStore((state) => state.setColumnOrder);
   const setColumnVisibility = useTableStore((state) => state.setColumnVisibility);
 
+  const tableData = useMemo(
+    () => (loading ? Array(defaultPageSize).fill({}) : (data ?? [])),
+    [data, defaultPageSize, loading],
+  );
+  const tableColumns = useMemo(
+    () =>
+      loading
+        ? columns.map((column) => ({
+            ...column,
+            cell: () => <Skeleton className="h-6 w-full" />,
+          }))
+        : columns,
+    [loading, columns],
+  );
+
   // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
-    data: data ?? [],
-    columns: columns,
+    data: tableData ?? [],
+    columns: tableColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -356,7 +374,7 @@ export function DataTable<TData, TValue>({
           </DragOverlay>
         )}
       </DndContext>
-      <Pagination table={table} pageSizes={pageSizes} />
+      {!loading && <Pagination table={table} pageSizes={pageSizes} />}
     </section>
   );
 }
