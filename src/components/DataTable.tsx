@@ -302,7 +302,7 @@ export function DataTable<TData, TValue>({
               </SortableContext>
             ))}
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="bg-card over:bg-card" key={`${headerGroup.id}-filters`}>
+              <TableRow className="bg-card hover:bg-card" key={`${headerGroup.id}-filters`}>
                 {options?.columnSearch &&
                   headerGroup.headers.map((header) => (
                     <TableHead
