@@ -5,20 +5,13 @@ import type { Table } from "@tanstack/react-table";
 type TProps<T> = {
   filename?: string;
   formatters?: Record<string, TPdfFormatter<T>>;
-  headers?: Record<string, string>;
   table: Table<T>;
   title?: string;
 };
 
 export type TPdfFormatter<T> = (row: T) => string;
 
-export function exportTableToPdf<T>({
-  filename = "table.pdf",
-  formatters = {},
-  headers = {},
-  table,
-  title,
-}: TProps<T>): void {
+export function exportTableToPdf<T>({ filename = "table.pdf", formatters = {}, table, title }: TProps<T>): void {
   const doc = new jsPDF();
 
   let y = 14;
@@ -30,10 +23,8 @@ export function exportTableToPdf<T>({
 
   const columns = table
     .getAllLeafColumns()
-    .filter(
-      (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disableExport,
-    );
-  const headerRow = columns.map((col) => headers[col.id] ?? col.id);
+    .filter((col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disableExport);
+  const headerRow = columns.map((col) => col.id);
   const selectedRows = table.getSelectedRowModel().rows;
   const rows = selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
 
