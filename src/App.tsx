@@ -34,31 +34,34 @@ export default function App() {
     },
     {
       accessorKey: "id",
+      id: "ID",
       size: 40,
       enableColumnFilter: false,
       meta: { disableDragging: true },
       header: ({ column }) => (
         <div className="flex items-center gap-1">
-          <span>ID</span>
+          <span>{column.id}</span>
           <SortableIcon column={column} />
         </div>
       ),
     },
     {
       accessorKey: "name",
+      id: "Nombre",
       size: 80,
       header: ({ column }) => (
         <div className="flex items-center gap-1">
-          <span>Nombre</span>
+          <span>{column.id}</span>
           <SortableIcon column={column} />
         </div>
       ),
     },
     {
       accessorKey: "occupation",
+      id: "Ocupación",
       header: ({ column }) => (
         <div className="flex items-center gap-1">
-          <span>Ocupación</span>
+          <span>{column.id}</span>
           <SortableIcon column={column} />
         </div>
       ),
@@ -79,20 +82,6 @@ export default function App() {
             data={data}
             columns={columns}
             defaultSorting={[{ id: "name", desc: false }]}
-            exportPdfConfig={{
-              headers: {
-                id: "ID",
-                name: "Nombre",
-                occupation: "Ocupación",
-              },
-            }}
-            exportXlsConfig={{
-              headers: {
-                id: "ID",
-                name: "Nombre",
-                occupation: "Ocupación",
-              },
-            }}
             storageKey="characters"
           />
         </section>
