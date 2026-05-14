@@ -7,7 +7,7 @@ import { DataTable, type ITableOptions } from "@/components/DataTable";
 import { SortableIcon } from "@/components/SortableIcon";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DataService, type ICharacter } from "@/services/data.service";
 import { useTheme } from "@/providers/theme.context";
@@ -22,9 +22,26 @@ const INIT_OPTS: ITableOptions = {
 };
 
 export default function App() {
+  const [data, setData] = useState<ICharacter[]>([]);
+  const [delay, setDelay] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
   const [tableOptions, setTableOptions] = useState(INIT_OPTS);
-  const data = DataService.get();
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (delay > 0) setLoading(true);
+        const data = await DataService.get(delay);
+        setData(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [delay]);
 
   const columns: ColumnDef<ICharacter>[] = [
     {
@@ -181,6 +198,16 @@ export default function App() {
                   <label htmlFor="global-search">Buscar globalmente</label>
                 </li>
               </ul>
+              <ul className="flex flex-col gap-3">
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="simulate-async"
+                    checked={delay !== 0}
+                    onCheckedChange={(checked) => setDelay(checked ? 4000 : 0)}
+                  />
+                  <label htmlFor="simulate-async">Simular conexión lenta</label>
+                </li>
+              </ul>
             </div>
           </CardContent>
         </Card>
@@ -193,6 +220,7 @@ export default function App() {
               data={data}
               columns={columns}
               defaultSorting={[{ id: "Nombre", desc: false }]}
+              loading={loading}
               options={tableOptions}
               storageKey="characters-01"
             />
@@ -204,6 +232,7 @@ export default function App() {
             data={data}
             columns={columns}
             defaultSorting={[{ id: "Nombre", desc: false }]}
+            loading={loading}
             options={tableOptions}
             storageKey="characters-02"
           />
