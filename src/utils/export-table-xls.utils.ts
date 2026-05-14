@@ -5,7 +5,6 @@ import { saveAs } from "file-saver";
 type TProps<T> = {
   filename?: string;
   formatters?: Record<string, TXlsFormatter<T>>;
-  headers?: Record<string, string>;
   table: Table<T>;
   sheetName?: string;
 };
@@ -15,7 +14,6 @@ export type TXlsFormatter<T> = (row: T) => string;
 export async function exportTableToXls<T>({
   filename = `table-${Date.now()}.xlsx`,
   formatters = {},
-  headers = {},
   table,
   sheetName = "Sheet1",
 }: TProps<T>): Promise<void> {
@@ -24,11 +22,9 @@ export async function exportTableToXls<T>({
 
   const columns = table
     .getAllLeafColumns()
-    .filter(
-      (col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disableExport,
-    );
+    .filter((col) => col.getIsVisible() && !(col.columnDef.meta as Record<string, unknown> | undefined)?.disableExport);
 
-  const headerRow = columns.map((col) => headers[col.id] ?? col.id);
+  const headerRow = columns.map((col) => col.id);
 
   const selectedRows = table.getSelectedRowModel().rows;
   const rows = selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
@@ -61,7 +57,7 @@ export async function exportTableToXls<T>({
 
   worksheet.columns = columns.map((col, i) => ({
     key: col.id,
-    header: headers[col.id] ?? col.id,
+    header: col.id,
     width: colWidths[i],
   }));
 
