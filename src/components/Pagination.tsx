@@ -1,14 +1,7 @@
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import type { Table } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
@@ -20,27 +13,15 @@ interface IProps<TData> {
 
 export function Pagination<TData>({ pageSizes, table }: IProps<TData>) {
   return (
-    <section
-      className={`dark:bg-muted flex items-center justify-end gap-2 p-5 md:gap-5`}
-    >
-      <Select
-        value={`${table.getState().pagination.pageSize}`}
-        onValueChange={(e) => table.setPageSize(parseInt(e))}
-      >
+    <section className={`dark:bg-card flex items-center justify-end gap-2 p-5 md:gap-5`}>
+      <Select value={`${table.getState().pagination.pageSize}`} onValueChange={(e) => table.setPageSize(parseInt(e))}>
         <SelectTrigger className="text-muted-foreground text-xs" size="default">
           <SelectValue placeholder={table.getState().pagination.pageSize} />
         </SelectTrigger>
-        <SelectContent
-          className="w-16.25 min-w-px"
-          onCloseAutoFocus={(e) => e.preventDefault()}
-        >
+        <SelectContent className="w-16.25 min-w-px" onCloseAutoFocus={(e) => e.preventDefault()}>
           <SelectGroup className="[&_svg]:h-4 [&_svg]:w-4">
             {pageSizes.map((pageSize) => (
-              <SelectItem
-                key={pageSize}
-                value={`${pageSize}`}
-                className="justify-between text-xs"
-              >
+              <SelectItem key={pageSize} value={`${pageSize}`} className="justify-between text-xs">
                 {pageSize}
               </SelectItem>
             ))}
@@ -73,12 +54,7 @@ export function Pagination<TData>({ pageSizes, table }: IProps<TData>) {
         </span>
         {table.getPageCount() > 1 && (
           <>
-            <Button
-              disabled={!table.getCanNextPage()}
-              onClick={() => table.nextPage()}
-              size="icon"
-              variant="secondary"
-            >
+            <Button disabled={!table.getCanNextPage()} onClick={() => table.nextPage()} size="icon" variant="secondary">
               <ChevronRight size={16} />
             </Button>
             <Button
