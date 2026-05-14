@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable, type ITableOptions } from "@/components/DataTable";
 import { SortableIcon } from "@/components/SortableIcon";
@@ -8,12 +9,12 @@ import { useState } from "react";
 import { DataService, type ICharacter } from "@/services/data.service";
 
 const INIT_OPTS: ITableOptions = {
-  columnSearch: false,
-  dragAndDrop: false,
-  exportPdf: false,
-  exportXls: false,
-  globalSearch: false,
-  hideColumns: false,
+  columnSearch: true,
+  dragAndDrop: true,
+  exportPdf: true,
+  exportXls: true,
+  globalSearch: true,
+  hideColumns: true,
 };
 
 export default function App() {
@@ -70,6 +71,17 @@ export default function App() {
       ),
     },
     {
+      accessorKey: "gender",
+      id: "Género",
+      size: 40,
+      enableColumnFilter: false,
+      header: ({ column }) => (
+        <div className="flex items-center gap-1">
+          <span>{column.id}</span>
+        </div>
+      ),
+    },
+    {
       accessorKey: "occupation",
       id: "Ocupación",
       header: ({ column }) => (
@@ -89,65 +101,83 @@ export default function App() {
         </div>
       </header>
       <main className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-8">
-        <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-medium tracking-tight">Opciones de la tabla:</h2>
-          <div className="flex gap-10 text-sm">
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-center gap-2">
-                <Checkbox
-                  id="export-pdf"
-                  checked={tableOptions?.exportPdf ?? false}
-                  onCheckedChange={(checked) => setTableOptions({ ...tableOptions, exportPdf: !!checked })}
-                />
-                <label htmlFor="export-pdf">Exportar PDF</label>
-              </li>
-              <li className="flex items-center gap-2">
-                <Checkbox
-                  id="export-xls"
-                  checked={tableOptions?.exportXls ?? false}
-                  onCheckedChange={(checked) => setTableOptions({ ...tableOptions, exportXls: !!checked })}
-                />
-                <label htmlFor="export-xls">Exportar XLS</label>
-              </li>
-            </ul>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-center gap-2">
-                <Checkbox
-                  id="drag-and-drop"
-                  checked={tableOptions?.dragAndDrop ?? false}
-                  onCheckedChange={(checked) => setTableOptions({ ...tableOptions, dragAndDrop: !!checked })}
-                />
-                <label htmlFor="drag-and-drop">Ordenar columnas</label>
-              </li>
-              <li className="flex items-center gap-2">
-                <Checkbox
-                  id="hide-columns"
-                  checked={tableOptions?.hideColumns ?? false}
-                  onCheckedChange={(checked) => setTableOptions({ ...tableOptions, hideColumns: !!checked })}
-                />
-                <label htmlFor="hide-columns">Ocultar columnas</label>
-              </li>
-            </ul>
-            <ul className="flex flex-col gap-3">
-              <li className="flex items-center gap-2">
-                <Checkbox
-                  id="column-search"
-                  checked={tableOptions?.columnSearch ?? false}
-                  onCheckedChange={(checked) => setTableOptions({ ...tableOptions, columnSearch: !!checked })}
-                />
-                <label htmlFor="column-search">Buscar en columnas</label>
-              </li>
-              <li className="flex items-center gap-2">
-                <Checkbox
-                  id="global-search"
-                  checked={tableOptions?.globalSearch ?? false}
-                  onCheckedChange={(checked) => setTableOptions({ ...tableOptions, globalSearch: !!checked })}
-                />
-                <label htmlFor="global-search">Buscar globalmente</label>
-              </li>
-            </ul>
-          </div>
-        </section>
+        <Card className="flex flex-col gap-3">
+          <CardHeader>
+            <CardTitle>Opciones de la tabla</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-10 text-sm">
+              <ul className="flex flex-col gap-3">
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="export-pdf"
+                    checked={tableOptions?.exportPdf ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, exportPdf: !!checked })}
+                  />
+                  <label htmlFor="export-pdf">Exportar PDF</label>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="export-xls"
+                    checked={tableOptions?.exportXls ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, exportXls: !!checked })}
+                  />
+                  <label htmlFor="export-xls">Exportar XLS</label>
+                </li>
+              </ul>
+              <ul className="flex flex-col gap-3">
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="drag-and-drop"
+                    checked={tableOptions?.dragAndDrop ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, dragAndDrop: !!checked })}
+                  />
+                  <label htmlFor="drag-and-drop">Ordenar columnas</label>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="hide-columns"
+                    checked={tableOptions?.hideColumns ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, hideColumns: !!checked })}
+                  />
+                  <label htmlFor="hide-columns">Ocultar columnas</label>
+                </li>
+              </ul>
+              <ul className="flex flex-col gap-3">
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="column-search"
+                    checked={tableOptions?.columnSearch ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, columnSearch: !!checked })}
+                  />
+                  <label htmlFor="column-search">Buscar en columnas</label>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="global-search"
+                    checked={tableOptions?.globalSearch ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, globalSearch: !!checked })}
+                  />
+                  <label htmlFor="global-search">Buscar globalmente</label>
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Personajes de los Simpsons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DataTable
+              data={data}
+              columns={columns}
+              defaultSorting={[{ id: "Nombre", desc: false }]}
+              options={tableOptions}
+              storageKey="characters-01"
+            />
+          </CardContent>
+        </Card>
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold tracking-tight">Personajes de los Simpsons</h2>
           <DataTable
@@ -155,7 +185,7 @@ export default function App() {
             columns={columns}
             defaultSorting={[{ id: "Nombre", desc: false }]}
             options={tableOptions}
-            storageKey="characters"
+            storageKey="characters-02"
           />
         </section>
       </main>
