@@ -33,6 +33,15 @@ import { exportTableToPdf, type TPdfFormatter } from "@/utils/export-table-pdf.u
 import { exportTableToXls, type TXlsFormatter } from "@/utils/export-table-xls.utils";
 import { useTableStore } from "@/stores/table.store";
 
+export interface ITableOptions {
+  columnSearch?: boolean;
+  dragAndDrop?: boolean;
+  exportPdf?: boolean;
+  exportXls?: boolean;
+  globalSearch?: boolean;
+  hideColumns?: boolean;
+}
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[] | undefined;
@@ -48,6 +57,7 @@ interface DataTableProps<TData, TValue> {
     formatters?: Record<string, TXlsFormatter<TData>>;
     sheetName?: string;
   };
+  options?: ITableOptions;
   pageSizes?: number[];
   storageKey: string;
 }
@@ -59,6 +69,7 @@ export function DataTable<TData, TValue>({
   defaultSorting = [],
   exportPdfConfig,
   exportXlsConfig,
+  options,
   pageSizes = [5, 10, 20, 50],
   storageKey,
 }: DataTableProps<TData, TValue>) {
@@ -136,94 +147,107 @@ export function DataTable<TData, TValue>({
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-end gap-5">
         <div className="flex items-center gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="text-muted-foreground hover:bg-muted"
-                size="icon"
-                variant="outline"
-                onClick={() =>
-                  exportTableToPdf({
-                    filename: exportPdfConfig?.filename,
-                    formatters: exportPdfConfig?.formatters,
-                    table,
-                    title: exportPdfConfig?.title,
-                  })
-                }
-              >
-                <FilePdf className="size-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Exportar PDF</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="text-muted-foreground hover:bg-muted"
-                size="icon"
-                variant="outline"
-                onClick={() =>
-                  exportTableToXls({
-                    filename: exportXlsConfig?.filename,
-                    formatters: exportXlsConfig?.formatters,
-                    sheetName: exportXlsConfig?.sheetName,
-                    table,
-                  })
-                }
-              >
-                <FileXls className="size-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Exportar XLS</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="text-muted-foreground hover:bg-muted"
-                onClick={() => clearTableStore(storageKey)}
-                size="icon"
-                variant="outline"
-              >
-                <RefreshCcw />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Resetear tabla</TooltipContent>
-          </Tooltip>
-
-          <Popover>
+          {options?.exportPdf && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <PopoverTrigger asChild>
-                  <Button className="text-muted-foreground hover:bg-muted" size="icon" variant="outline">
-                    <Columns3Cog />
-                  </Button>
-                </PopoverTrigger>
+                <Button
+                  className="text-muted-foreground hover:bg-muted"
+                  size="icon"
+                  variant="outline"
+                  onClick={() =>
+                    exportTableToPdf({
+                      filename: exportPdfConfig?.filename,
+                      formatters: exportPdfConfig?.formatters,
+                      table,
+                      title: exportPdfConfig?.title,
+                    })
+                  }
+                >
+                  <FilePdf className="size-5" />
+                </Button>
               </TooltipTrigger>
-              <TooltipContent>Seleccionar columnas</TooltipContent>
+              <TooltipContent>Exportar PDF</TooltipContent>
             </Tooltip>
-            <PopoverContent className="max-h-50 w-fit overflow-y-auto">
-              {table.getAllLeafColumns().map((column) => (
-                <label key={column.id} className="flex items-center gap-2 text-sm">
-                  <Checkbox
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
-                  />
-                  {column.id}
-                </label>
-              ))}
-            </PopoverContent>
-          </Popover>
+          )}
+          {options?.exportXls && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="text-muted-foreground hover:bg-muted"
+                  size="icon"
+                  variant="outline"
+                  onClick={() =>
+                    exportTableToXls({
+                      filename: exportXlsConfig?.filename,
+                      formatters: exportXlsConfig?.formatters,
+                      sheetName: exportXlsConfig?.sheetName,
+                      table,
+                    })
+                  }
+                >
+                  <FileXls className="size-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Exportar XLS</TooltipContent>
+            </Tooltip>
+          )}
+          {(options?.hideColumns || options?.dragAndDrop) && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="text-muted-foreground hover:bg-muted"
+                  onClick={() => clearTableStore(storageKey)}
+                  size="icon"
+                  variant="outline"
+                >
+                  <RefreshCcw />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Resetear tabla</TooltipContent>
+            </Tooltip>
+          )}
+          {options?.hideColumns && (
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button className="text-muted-foreground hover:bg-muted" size="icon" variant="outline">
+                      <Columns3Cog />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>Seleccionar columnas</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="max-h-50 w-fit overflow-y-auto">
+                {table.getAllLeafColumns().map((column) => (
+                  <label key={column.id} className="flex items-center gap-2 text-sm">
+                    <Checkbox
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
+                    />
+                    {column.id}
+                  </label>
+                ))}
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
-        <SearchInput
-          onChange={(e) => table.setGlobalFilter(String(e.target.value))}
-          onClear={() => {
-            table.setGlobalFilter("");
-            setGlobalFilter("");
-          }}
-          value={globalFilter}
-        />
+        {options?.globalSearch && (
+          <SearchInput
+            onChange={(e) => table.setGlobalFilter(String(e.target.value))}
+            onClear={() => {
+              table.setGlobalFilter("");
+              setGlobalFilter("");
+            }}
+            value={globalFilter}
+          />
+        )}
       </div>
-      <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      <DndContext
+        collisionDetection={closestCenter}
+        onDragStart={(e) => options?.dragAndDrop && handleDragStart(e)}
+        onDragEnd={(e) => options?.dragAndDrop && handleDragEnd(e)}
+      >
         <Table className="dark:bg-muted w-full table-fixed">
           <TableHeader className="dark:bg-primary-foreground bg-neutral-100">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -237,8 +261,12 @@ export function DataTable<TData, TValue>({
                 strategy={rectSortingStrategy}
               >
                 <TableRow>
-                  {headerGroup.headers.map((header) =>
-                    (header.column.columnDef.meta as { disableDragging?: boolean } | undefined)?.disableDragging ? (
+                  {headerGroup.headers.map((header) => {
+                    const disableDragging = (header.column.columnDef.meta as { disableDragging?: boolean } | undefined)
+                      ?.disableDragging;
+                    return options?.dragAndDrop && !disableDragging ? (
+                      <DraggableColumnHeader header={header} key={header.id} />
+                    ) : (
                       <TableHead
                         key={header.id}
                         className="py-2.5"
@@ -250,38 +278,37 @@ export function DataTable<TData, TValue>({
                       >
                         {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
-                    ) : (
-                      <DraggableColumnHeader header={header} key={header.id} />
-                    ),
-                  )}
+                    );
+                  })}
                 </TableRow>
               </SortableContext>
             ))}
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow className="bg-background hover:bg-background" key={`${headerGroup.id}-filters`}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={`${header.id}-filter`}
-                    className="py-1.5"
-                    style={{
-                      minWidth: header.column.columnDef.minSize,
-                      width: header.column.getSize(),
-                      maxWidth: header.column.columnDef.maxSize,
-                    }}
-                  >
-                    {header.column.getCanFilter() ? (
-                      <SearchInput
-                        className="w-35"
-                        onChange={(e) => header.column.setFilterValue(e.target.value)}
-                        onClear={() => {
-                          header.column.setFilterValue("");
-                        }}
-                        size="sm"
-                        value={(header.column.getFilterValue() as string) ?? ""}
-                      />
-                    ) : null}
-                  </TableHead>
-                ))}
+                {options?.columnSearch &&
+                  headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={`${header.id}-filter`}
+                      className="py-1.5"
+                      style={{
+                        minWidth: header.column.columnDef.minSize,
+                        width: header.column.getSize(),
+                        maxWidth: header.column.columnDef.maxSize,
+                      }}
+                    >
+                      {header.column.getCanFilter() ? (
+                        <SearchInput
+                          className="w-35"
+                          onChange={(e) => header.column.setFilterValue(e.target.value)}
+                          onClear={() => {
+                            header.column.setFilterValue("");
+                          }}
+                          size="sm"
+                          value={(header.column.getFilterValue() as string) ?? ""}
+                        />
+                      ) : null}
+                    </TableHead>
+                  ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -312,20 +339,22 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <DragOverlay>
-          {activeColumnId ? (
-            <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 text-sm shadow-lg">
-              <GripVertical className="text-muted-foreground h-4 w-4" />
-              {table
-                .getHeaderGroups()
-                .map((hg) =>
-                  hg.headers
-                    .filter((h) => h.column.id === activeColumnId)
-                    .map((h) => <span key={h.id}>{flexRender(h.column.columnDef.header, h.getContext())}</span>),
-                )}
-            </div>
-          ) : null}
-        </DragOverlay>
+        {options?.dragAndDrop && (
+          <DragOverlay>
+            {activeColumnId ? (
+              <div className="bg-background flex items-center gap-2 rounded-md border px-2 py-1 text-sm shadow-lg">
+                <GripVertical className="text-muted-foreground h-4 w-4" />
+                {table
+                  .getHeaderGroups()
+                  .map((hg) =>
+                    hg.headers
+                      .filter((h) => h.column.id === activeColumnId)
+                      .map((h) => <span key={h.id}>{flexRender(h.column.columnDef.header, h.getContext())}</span>),
+                  )}
+              </div>
+            ) : null}
+          </DragOverlay>
+        )}
       </DndContext>
       <Pagination table={table} pageSizes={pageSizes} />
     </section>
