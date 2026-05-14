@@ -135,6 +135,9 @@
   html {
     @apply font-sans;
   }
+  label {
+    cursor: pointer;
+  }
 }
 
 ::view-transition-old(root) {
