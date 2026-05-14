@@ -9,6 +9,7 @@ import { Pagination } from "@/components/Pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SearchInput } from "@/components/SearchInput";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { DndContext, DragOverlay, closestCenter, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import { arrayMove, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
@@ -135,63 +136,80 @@ export function DataTable<TData, TValue>({
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-end gap-5">
         <div className="flex items-center gap-2">
-          <Button
-            className="text-muted-foreground hover:bg-muted"
-            size="icon"
-            variant="outline"
-            onClick={() =>
-              exportTableToPdf({
-                filename: exportPdfConfig?.filename,
-                formatters: exportPdfConfig?.formatters,
-                table,
-                title: exportPdfConfig?.title,
-              })
-            }
-          >
-            <FilePdf className="size-5" />
-          </Button>
-          <Button
-            className="text-muted-foreground hover:bg-muted"
-            size="icon"
-            variant="outline"
-            onClick={() =>
-              exportTableToXls({
-                filename: exportXlsConfig?.filename,
-                formatters: exportXlsConfig?.formatters,
-                sheetName: exportXlsConfig?.sheetName,
-                table,
-              })
-            }
-          >
-            <FileXls className="size-5" />
-          </Button>
-          <Button
-            className="text-muted-foreground hover:bg-muted"
-            onClick={() => clearTableStore(storageKey)}
-            size="icon"
-            variant="outline"
-          >
-            <RefreshCcw />
-          </Button>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button className="text-muted-foreground hover:bg-muted" size="icon" variant="outline">
-                <Columns3Cog />
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="text-muted-foreground hover:bg-muted"
+                size="icon"
+                variant="outline"
+                onClick={() =>
+                  exportTableToPdf({
+                    filename: exportPdfConfig?.filename,
+                    formatters: exportPdfConfig?.formatters,
+                    table,
+                    title: exportPdfConfig?.title,
+                  })
+                }
+              >
+                <FilePdf className="size-5" />
               </Button>
-            </PopoverTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Exportar PDF</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="text-muted-foreground hover:bg-muted"
+                size="icon"
+                variant="outline"
+                onClick={() =>
+                  exportTableToXls({
+                    filename: exportXlsConfig?.filename,
+                    formatters: exportXlsConfig?.formatters,
+                    sheetName: exportXlsConfig?.sheetName,
+                    table,
+                  })
+                }
+              >
+                <FileXls className="size-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Exportar XLS</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="text-muted-foreground hover:bg-muted"
+                onClick={() => clearTableStore(storageKey)}
+                size="icon"
+                variant="outline"
+              >
+                <RefreshCcw />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Resetear tabla</TooltipContent>
+          </Tooltip>
+
+          <Popover>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <PopoverTrigger asChild>
+                  <Button className="text-muted-foreground hover:bg-muted" size="icon" variant="outline">
+                    <Columns3Cog />
+                  </Button>
+                </PopoverTrigger>
+              </TooltipTrigger>
+              <TooltipContent>Seleccionar columnas</TooltipContent>
+            </Tooltip>
             <PopoverContent className="max-h-50 w-fit overflow-y-auto">
-              {table.getAllLeafColumns().map((column, idx) => (
-                <>
-                  {idx > 0 && (
-                    <label key={column.id} className="flex items-center gap-2 text-sm">
-                      <Checkbox
-                        checked={column.getIsVisible()}
-                        onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
-                      />
-                      {column.id}
-                    </label>
-                  )}
-                </>
+              {table.getAllLeafColumns().map((column) => (
+                <label key={column.id} className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
+                  />
+                  {column.id}
+                </label>
               ))}
             </PopoverContent>
           </Popover>
