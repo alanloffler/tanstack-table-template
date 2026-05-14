@@ -248,8 +248,8 @@ export function DataTable<TData, TValue>({
         onDragStart={(e) => options?.dragAndDrop && handleDragStart(e)}
         onDragEnd={(e) => options?.dragAndDrop && handleDragEnd(e)}
       >
-        <Table className="dark:bg-muted w-full table-fixed">
-          <TableHeader className="dark:bg-primary-foreground bg-neutral-100">
+        <Table className="dark:bg-card w-full table-fixed">
+          <TableHeader className="dark:bg-primary-foreground/50 bg-neutral-100">
             {table.getHeaderGroups().map((headerGroup) => (
               <SortableContext
                 key={headerGroup.id}
@@ -284,7 +284,7 @@ export function DataTable<TData, TValue>({
               </SortableContext>
             ))}
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="bg-background hover:bg-background" key={`${headerGroup.id}-filters`}>
+              <TableRow className="bg-card over:bg-card" key={`${headerGroup.id}-filters`}>
                 {options?.columnSearch &&
                   headerGroup.headers.map((header) => (
                     <TableHead
