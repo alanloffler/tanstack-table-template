@@ -14,6 +14,7 @@ import { useTheme } from "@/providers/theme.context";
 
 const INIT_OPTS: ITableOptions = {
   columnSearch: true,
+  columnSizing: false,
   dragAndDrop: true,
   exportPdf: true,
   exportXls: true,
@@ -25,7 +26,7 @@ export default function App() {
   const [data, setData] = useState<ICharacter[]>([]);
   const [delay, setDelay] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [tableOptions, setTableOptions] = useState(INIT_OPTS);
+  const [tableOptions, setTableOptions] = useState<ITableOptions>(INIT_OPTS);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -191,6 +192,14 @@ export default function App() {
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, hideColumns: !!checked })}
                   />
                   <label htmlFor="hide-columns">Ocultar columnas</label>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="resize-columns"
+                    checked={tableOptions?.columnSizing ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, columnSizing: !!checked })}
+                  />
+                  <label htmlFor="resize-columns">Redimensionar columnas</label>
                 </li>
               </ul>
               <ul className="flex flex-col gap-3">
