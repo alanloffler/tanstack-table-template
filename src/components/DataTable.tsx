@@ -190,6 +190,7 @@ export function DataTable<TData, TValue>({
 
   const visibleColumns = table.getVisibleLeafColumns();
   const fixedColumnsWidth = visibleColumns.slice(0, -1).reduce((sum, c) => sum + c.getSize(), 0);
+  const lastColumnMinSize = visibleColumns[visibleColumns.length - 1]?.columnDef.minSize ?? 40;
 
   // Drag and drop column ordering
   function handleDragStart(event: DragStartEvent): void {
@@ -317,7 +318,7 @@ export function DataTable<TData, TValue>({
         <div className="overflow-x-auto">
           <Table
             className="dark:bg-card table-fixed"
-            style={{ ...columnSizeVars, width: "100%", minWidth: fixedColumnsWidth }}
+            style={{ ...columnSizeVars, width: "100%", minWidth: fixedColumnsWidth + lastColumnMinSize }}
           >
             <TableHeader className="dark:bg-primary-foreground/50 bg-neutral-100">
               {table.getHeaderGroups().map((headerGroup) => (
