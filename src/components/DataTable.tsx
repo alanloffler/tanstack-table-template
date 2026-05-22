@@ -4,16 +4,18 @@ import { Columns3Cog, GripVertical, RefreshCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { DraggableColumnHeader } from "@/components/DraggableColumnHeader";
 import { Pagination } from "@/components/Pagination";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SearchInput } from "@/components/SearchInput";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SortableContext } from "@dnd-kit/sortable";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { DndContext, DragOverlay, closestCenter, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
-import { arrayMove, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import { arrayMove, rectSortingStrategy } from "@dnd-kit/sortable";
+import { closestCenter, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
 import {
   flexRender,
   getCoreRowModel,
@@ -22,14 +24,16 @@ import {
   getSortedRowModel,
   type ColumnDef,
   type ColumnFiltersState,
+  type ColumnSizingState,
   type PaginationState,
   type RowSelectionState,
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
+import { cn } from "@/lib/utils";
 import { exportTableToPdf, type TPdfFormatter } from "@/utils/export-table-pdf.utils";
 import { exportTableToXls, type TXlsFormatter } from "@/utils/export-table-xls.utils";
 import { useTableStore } from "@/stores/table.store";
@@ -78,6 +82,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [globalFilter, setGlobalFilter] = useState<string>("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -87,9 +92,11 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>(defaultSorting);
   const clearTableStore = useTableStore((state) => state.clearTable);
   const columnOrder = useTableStore(useShallow((state) => state.tables[storageKey]?.columnOrder ?? []));
+  const columnSizing = useTableStore(useShallow((state) => state.tables[storageKey]?.columnSizing ?? {}));
   const columnVisibility = useTableStore(useShallow((state) => state.tables[storageKey]?.columnVisibility ?? {}));
   const setStoredColumnOrder = useTableStore((state) => state.setColumnOrder);
-  const setColumnVisibility = useTableStore((state) => state.setColumnVisibility);
+  const setStoredColumnSizing = useTableStore((state) => state.setColumnSizing);
+  const setStoredColumnVisibility = useTableStore((state) => state.setColumnVisibility);
 
   const tableData = useMemo(
     () => (loading ? Array(defaultPageSize).fill({}) : (data ?? [])),
@@ -110,6 +117,12 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data: tableData ?? [],
     columns: tableColumns,
+    columnResizeMode: "onChange",
+    defaultColumn: { minSize: 40 },
+    onColumnSizingChange: (updateOrValue) => {
+      const newSizing = typeof updateOrValue === "function" ? updateOrValue(columnSizing) : updateOrValue;
+      setStoredColumnSizing(storageKey, newSizing);
+    },
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -126,10 +139,11 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: (updaterOrValue) => {
       const newVisibility = typeof updaterOrValue === "function" ? updaterOrValue(columnVisibility) : updaterOrValue;
-      setColumnVisibility(storageKey, newVisibility);
+      setStoredColumnVisibility(storageKey, newVisibility);
     },
     state: {
       columnOrder: columnOrder,
+      columnSizing: columnSizing,
       columnVisibility: columnVisibility,
       globalFilter: globalFilter,
       columnFilters: columnFilters,
@@ -139,9 +153,42 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  // useEffect(() => {
-  //   console.log("Selected rows:", table.getSelectedRowModel().rows.length);
-  // }, [rowSelection, table]);
+  const computeDefaultSizing = useCallback((): ColumnSizingState | null => {
+    const container = containerRef.current;
+    if (!container) return null;
+    const width = container.offsetWidth;
+    if (width === 0) return null;
+    const visibleCols = table.getAllLeafColumns().filter((c) => c.getIsVisible());
+    if (visibleCols.length === 0) return null;
+    const totalWeight = visibleCols.reduce((sum, c) => sum + (c.columnDef.size ?? 150), 0);
+    const sizing: ColumnSizingState = {};
+    visibleCols.forEach((c) => {
+      sizing[c.id] = Math.floor(((c.columnDef.size ?? 150) / totalWeight) * width);
+    });
+    return sizing;
+  }, [table]);
+
+  useEffect(() => {
+    if (Object.keys(columnSizing).length > 0) return;
+    const sizing = computeDefaultSizing();
+    if (sizing) setStoredColumnSizing(storageKey, sizing);
+  }, [columnSizing, computeDefaultSizing, setStoredColumnSizing, storageKey]);
+
+  const isResizing = !!table.getState().columnSizingInfo.isResizingColumn;
+
+  const columnSizeVars = useMemo(() => {
+    const headers = table.getFlatHeaders();
+    const colSizes: Record<string, number> = {};
+    for (const header of headers) {
+      colSizes[`--header-${header.id}-size`] = header.getSize();
+      colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
+    }
+    return colSizes;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [table.getState().columnSizingInfo, table.getState().columnSizing]);
+
+  const visibleColumns = table.getVisibleLeafColumns();
+  const fixedColumnsWidth = visibleColumns.slice(0, -1).reduce((sum, c) => sum + c.getSize(), 0);
 
   // Drag and drop column ordering
   function handleDragStart(event: DragStartEvent): void {
@@ -162,7 +209,7 @@ export function DataTable<TData, TValue>({
   }
 
   return (
-    <section className="flex flex-col gap-3">
+    <section ref={containerRef} className={cn("flex flex-col gap-3", isResizing && "cursor-col-resize select-none")}>
       <div className="flex items-center justify-end gap-5">
         <div className="flex items-center gap-2">
           {options?.exportPdf && (
@@ -266,97 +313,120 @@ export function DataTable<TData, TValue>({
         onDragStart={(e) => options?.dragAndDrop && handleDragStart(e)}
         onDragEnd={(e) => options?.dragAndDrop && handleDragEnd(e)}
       >
-        <Table className="dark:bg-card w-full table-fixed">
-          <TableHeader className="dark:bg-primary-foreground/50 bg-neutral-100">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <SortableContext
-                key={headerGroup.id}
-                items={headerGroup.headers
-                  .filter(
-                    (h) => !(h.column.columnDef.meta as { disableDragging?: boolean } | undefined)?.disableDragging,
-                  )
-                  .map((h) => h.column.id)}
-                strategy={rectSortingStrategy}
-              >
-                <TableRow>
-                  {headerGroup.headers.map((header) => {
-                    const disableDragging = (header.column.columnDef.meta as { disableDragging?: boolean } | undefined)
-                      ?.disableDragging;
-                    return options?.dragAndDrop && !disableDragging ? (
-                      <DraggableColumnHeader header={header} key={header.id} />
-                    ) : (
-                      <TableHead
-                        key={header.id}
-                        className="py-2.5"
-                        style={{
-                          minWidth: header.column.columnDef.minSize,
-                          width: header.column.getSize(),
-                          maxWidth: header.column.columnDef.maxSize,
-                        }}
-                      >
-                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              </SortableContext>
-            ))}
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow className="bg-card hover:bg-card" key={`${headerGroup.id}-filters`}>
-                {options?.columnSearch &&
-                  headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={`${header.id}-filter`}
-                      className="py-1.5"
-                      style={{
-                        minWidth: header.column.columnDef.minSize,
-                        width: header.column.getSize(),
-                        maxWidth: header.column.columnDef.maxSize,
-                      }}
-                    >
-                      {header.column.getCanFilter() ? (
-                        <SearchInput
-                          className="w-35"
-                          onChange={(e) => header.column.setFilterValue(e.target.value)}
-                          onClear={() => {
-                            header.column.setFilterValue("");
+        <div className="overflow-x-auto">
+          <Table
+            className="dark:bg-card table-fixed"
+            style={{ ...columnSizeVars, width: "100%", minWidth: fixedColumnsWidth }}
+          >
+            <TableHeader className="dark:bg-primary-foreground/50 bg-neutral-100">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <SortableContext
+                  key={headerGroup.id}
+                  items={headerGroup.headers
+                    .filter(
+                      (h) => !(h.column.columnDef.meta as { disableDragging?: boolean } | undefined)?.disableDragging,
+                    )
+                    .map((h) => h.column.id)}
+                  strategy={rectSortingStrategy}
+                >
+                  <TableRow>
+                    {headerGroup.headers.map((header, index) => {
+                      const disableDragging = (
+                        header.column.columnDef.meta as { disableDragging?: boolean } | undefined
+                      )?.disableDragging;
+                      const isLastColumn = index === headerGroup.headers.length - 1;
+                      return options?.dragAndDrop && !disableDragging ? (
+                        <DraggableColumnHeader header={header} isLastColumn={isLastColumn} key={header.id} />
+                      ) : (
+                        <TableHead
+                          key={header.id}
+                          className="relative overflow-hidden py-2.5"
+                          style={{
+                            minWidth: header.column.columnDef.minSize,
+                            width: isLastColumn ? "auto" : `calc(var(--header-${header.id}-size) * 1px)`,
+                            maxWidth: isLastColumn ? undefined : header.column.columnDef.maxSize,
                           }}
-                          size="sm"
-                          value={(header.column.getFilterValue() as string) ?? ""}
-                        />
-                      ) : null}
-                    </TableHead>
-                  ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      className="whitespace-normal"
-                      style={{
-                        minWidth: cell.column.columnDef.minSize,
-                        width: cell.column.getSize(),
-                      }}
-                      key={cell.id}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                          {!isLastColumn && (
+                            <div
+                              onDoubleClick={() => header.column.resetSize()}
+                              onMouseDown={header.getResizeHandler()}
+                              onTouchStart={header.getResizeHandler()}
+                              className={`hover:bg-primary/50 active:bg-primary absolute top-0 right-0 h-full w-0.75 cursor-col-resize touch-none bg-transparent transition-colors select-none ${header.column.getIsResizing() ? "bg-primary" : ""}`}
+                            />
+                          )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                </SortableContext>
+              ))}
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow className="bg-card hover:bg-card" key={`${headerGroup.id}-filters`}>
+                  {options?.columnSearch &&
+                    headerGroup.headers.map((header, index) => {
+                      const isLastColumn = index === headerGroup.headers.length - 1;
+                      return (
+                        <TableHead
+                          key={`${header.id}-filter`}
+                          className="overflow-x-hidden border-r py-1.5 last:border-none"
+                          style={{
+                            minWidth: header.column.columnDef.minSize,
+                            width: isLastColumn ? "auto" : `calc(var(--header-${header.id}-size) * 1px)`,
+                            maxWidth: isLastColumn ? undefined : header.column.columnDef.maxSize,
+                          }}
+                        >
+                          {header.column.getCanFilter() ? (
+                            <SearchInput
+                              className="w-35"
+                              onChange={(e) => header.column.setFilterValue(e.target.value)}
+                              onClear={() => {
+                                header.column.setFilterValue("");
+                              }}
+                              size="sm"
+                              value={(header.column.getFilterValue() as string) ?? ""}
+                            />
+                          ) : null}
+                        </TableHead>
+                      );
+                    })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Sin resultados
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                    {row.getVisibleCells().map((cell, index) => {
+                      const isLastColumn = index === row.getVisibleCells().length - 1;
+                      return (
+                        <TableCell
+                          className="overflow-hidden border-r whitespace-normal last:border-none"
+                          style={{
+                            minWidth: cell.column.columnDef.minSize,
+                            width: isLastColumn ? "auto" : `calc(var(--col-${cell.column.id}-size) * 1px)`,
+                          }}
+                          key={cell.id}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    Sin resultados
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
         {options?.dragAndDrop && (
           <DragOverlay>
             {activeColumnId ? (
