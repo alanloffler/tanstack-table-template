@@ -40,6 +40,7 @@ import { useTableStore } from "@/stores/table.store";
 
 export interface ITableOptions {
   columnSearch?: boolean;
+  columnSizing?: boolean;
   dragAndDrop?: boolean;
   exportPdf?: boolean;
   exportXls?: boolean;
@@ -336,7 +337,12 @@ export function DataTable<TData, TValue>({
                       )?.disableDragging;
                       const isLastColumn = index === headerGroup.headers.length - 1;
                       return options?.dragAndDrop && !disableDragging ? (
-                        <DraggableColumnHeader header={header} isLastColumn={isLastColumn} key={header.id} />
+                        <DraggableColumnHeader
+                          header={header}
+                          isLastColumn={isLastColumn}
+                          columnSizing={options?.columnSizing}
+                          key={header.id}
+                        />
                       ) : (
                         <TableHead
                           key={header.id}
@@ -350,7 +356,7 @@ export function DataTable<TData, TValue>({
                           {header.isPlaceholder
                             ? null
                             : flexRender(header.column.columnDef.header, header.getContext())}
-                          {!isLastColumn && (
+                          {!isLastColumn && options?.columnSizing && (
                             <div
                               onDoubleClick={() => header.column.resetSize()}
                               onMouseDown={header.getResizeHandler()}
