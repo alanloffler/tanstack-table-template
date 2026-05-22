@@ -6,9 +6,11 @@ import { useSortable } from "@dnd-kit/sortable";
 export function DraggableColumnHeader<TData, TValue>({
   header,
   isLastColumn,
+  columnSizing,
 }: {
   header: Header<TData, TValue>;
   isLastColumn?: boolean;
+  columnSizing?: boolean;
 }) {
   const { attributes, isDragging, listeners, setNodeRef } = useSortable({
     id: header.column.id,
@@ -30,7 +32,7 @@ export function DraggableColumnHeader<TData, TValue>({
           {flexRender(header.column.columnDef.header, header.getContext())}
         </span>
       )}
-      {!isLastColumn && (
+      {!isLastColumn && columnSizing && (
         <div
           onDoubleClick={() => header.column.resetSize()}
           onPointerDown={(e) => e.stopPropagation()}
