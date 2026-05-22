@@ -14,7 +14,7 @@ import { useTheme } from "@/providers/theme.context";
 
 const INIT_OPTS: ITableOptions = {
   columnSearch: true,
-  columnSizing: false,
+  columnSizing: true,
   dragAndDrop: true,
   exportPdf: true,
   exportXls: true,
