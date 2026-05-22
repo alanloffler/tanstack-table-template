@@ -71,7 +71,7 @@ export default function App() {
     {
       accessorKey: "id",
       id: "ID",
-      size: 40,
+      size: 20,
       enableColumnFilter: false,
       meta: { disableDragging: true },
       header: ({ column }) => (
@@ -102,6 +102,19 @@ export default function App() {
           <span>{column.id}</span>
         </div>
       ),
+    },
+    {
+      accessorKey: "age",
+      id: "Edad",
+      size: 40,
+      enableColumnFilter: false,
+      header: ({ column }) => (
+        <div className="flex items-center gap-1">
+          <span>{column.id}</span>
+          <SortableIcon column={column} />
+        </div>
+      ),
+      cell: ({ row }) => <span>{row.original.age ?? "-"}</span>,
     },
     {
       accessorKey: "occupation",
