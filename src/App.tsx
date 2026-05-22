@@ -120,6 +120,7 @@ export default function App() {
     {
       accessorKey: "occupation",
       id: "Ocupación",
+      minSize: 200,
       header: ({ column }) => (
         <div className="flex items-center gap-1">
           <span>{column.id}</span>
