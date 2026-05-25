@@ -1,3 +1,4 @@
+import { Github } from "@/components/icons/Github";
 import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -140,21 +141,32 @@ export default function App() {
             <h1 className="text-lg font-semibold tracking-tight">Tanstack Table</h1>
             <span className="text-muted-foreground text-sm tracking-tight">React version</span>
           </div>
-          <Button
-            onClick={(e) => {
-              document.documentElement.style.setProperty("--x", `${e.clientX}px`);
-              document.documentElement.style.setProperty("--y", `${e.clientY}px`);
-              document.startViewTransition(() => setTheme(theme === "dark" ? "light" : "dark"));
-            }}
-            size="icon-sm"
-            variant="outline"
-          >
-            {theme === "dark" ? (
-              <Sun className="stroke-yellow-400" strokeWidth={1.5} />
-            ) : (
-              <Moon className="fill-neutral-200 stroke-neutral-400" strokeWidth={1.5} />
-            )}
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={() =>
+                window.open("https://github.com/alanloffler/tanstack-table-template", "_blank", "noopener,noreferrer")
+              }
+              size="icon-sm"
+              variant="outline"
+            >
+              <Github className="stroke-neutral-500" strokeWidth={1.5} />
+            </Button>
+            <Button
+              onClick={(e) => {
+                document.documentElement.style.setProperty("--x", `${e.clientX}px`);
+                document.documentElement.style.setProperty("--y", `${e.clientY}px`);
+                document.startViewTransition(() => setTheme(theme === "dark" ? "light" : "dark"));
+              }}
+              size="icon-sm"
+              variant="outline"
+            >
+              {theme === "dark" ? (
+                <Sun className="stroke-yellow-400" strokeWidth={1.5} />
+              ) : (
+                <Moon className="fill-neutral-200 stroke-neutral-400" strokeWidth={1.5} />
+              )}
+            </Button>
+          </div>
         </div>
       </header>
       <main className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-8">
