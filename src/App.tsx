@@ -20,6 +20,7 @@ const INIT_OPTS: ITableOptions = {
   exportXls: true,
   globalSearch: true,
   hideColumns: true,
+  showTooltips: true,
 };
 
 export default function App() {
@@ -229,6 +230,14 @@ export default function App() {
                     onCheckedChange={(checked) => setDelay(checked ? 4000 : 0)}
                   />
                   <label htmlFor="simulate-async">Simular conexión lenta</label>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Checkbox
+                    id="show-tooltips"
+                    checked={tableOptions?.showTooltips ?? false}
+                    onCheckedChange={(checked) => setTableOptions({ ...tableOptions, showTooltips: !!checked })}
+                  />
+                  <label htmlFor="show-tooltips">Mostrar tooltips</label>
                 </li>
               </ul>
             </div>
