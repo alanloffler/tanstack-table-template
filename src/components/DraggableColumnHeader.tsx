@@ -24,6 +24,7 @@ export function DraggableColumnHeader<TData, TValue>({
         minWidth: header.column.columnDef.minSize,
         width: isLastColumn ? "auto" : `calc(var(--header-${header.id}-size) * 1px)`,
         maxWidth: isLastColumn ? undefined : header.column.columnDef.maxSize,
+        textAlign: header.column.columnDef.meta?.alignment ?? "left",
         opacity: isDragging ? 0.5 : 1,
       }}
     >
