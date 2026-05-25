@@ -46,6 +46,7 @@ export interface ITableOptions {
   exportXls?: boolean;
   globalSearch?: boolean;
   hideColumns?: boolean;
+  showTooltips?: boolean;
 }
 
 interface DataTableProps<TData, TValue> {
@@ -233,7 +234,7 @@ export function DataTable<TData, TValue>({
                   <FilePdf className="size-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Exportar PDF</TooltipContent>
+              <TooltipContent hidden={!options?.showTooltips}>Exportar PDF</TooltipContent>
             </Tooltip>
           )}
           {options?.exportXls && (
@@ -255,7 +256,7 @@ export function DataTable<TData, TValue>({
                   <FileXls className="size-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Exportar XLS</TooltipContent>
+              <TooltipContent hidden={!options?.showTooltips}>Exportar XLS</TooltipContent>
             </Tooltip>
           )}
           {(options?.hideColumns || options?.dragAndDrop) && (
@@ -270,7 +271,7 @@ export function DataTable<TData, TValue>({
                   <RefreshCcw />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Resetear tabla</TooltipContent>
+              <TooltipContent hidden={!options?.showTooltips}>Resetear tabla</TooltipContent>
             </Tooltip>
           )}
           {options?.hideColumns && (
@@ -283,7 +284,7 @@ export function DataTable<TData, TValue>({
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
-                <TooltipContent>Seleccionar columnas</TooltipContent>
+                <TooltipContent hidden={!options?.showTooltips}>Seleccionar columnas</TooltipContent>
               </Tooltip>
               <PopoverContent className="max-h-50 w-fit overflow-y-auto">
                 {table.getAllLeafColumns().map((column) => (
