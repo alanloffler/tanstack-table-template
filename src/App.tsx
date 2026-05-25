@@ -52,6 +52,7 @@ export default function App() {
       size: 20,
       enableColumnFilter: false,
       meta: {
+        alignment: "center",
         disableExport: true,
         disableDragging: true,
       },
