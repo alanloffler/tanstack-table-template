@@ -350,6 +350,8 @@ export function DataTable<TData, TValue>({
                           key={header.id}
                           className="relative overflow-hidden py-2.5"
                           style={{
+                            justifyItems: header.column.columnDef.meta?.alignment ?? "left",
+                            textAlign: header.column.columnDef.meta?.alignment ?? "left",
                             minWidth: header.column.columnDef.minSize,
                             width: isLastColumn ? "auto" : `calc(var(--header-${header.id}-size) * 1px)`,
                             maxWidth: isLastColumn ? undefined : header.column.columnDef.maxSize,
@@ -414,6 +416,8 @@ export function DataTable<TData, TValue>({
                         <TableCell
                           className="overflow-hidden border-r whitespace-normal last:border-none"
                           style={{
+                            justifyItems: cell.column.columnDef.meta?.alignment ?? "left",
+                            textAlign: cell.column.columnDef.meta?.alignment ?? "left",
                             minWidth: cell.column.columnDef.minSize,
                             width: isLastColumn ? "auto" : `calc(var(--col-${cell.column.id}-size) * 1px)`,
                           }}
