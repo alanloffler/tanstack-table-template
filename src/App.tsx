@@ -135,8 +135,11 @@ export default function App() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <header className="border-border border-b">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <h1 className="text-lg font-semibold tracking-tight">Tanstack Table</h1>
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+          <div className="flex flex-col">
+            <h1 className="text-lg font-semibold tracking-tight">Tanstack Table</h1>
+            <span className="text-muted-foreground text-sm tracking-tight">React version</span>
+          </div>
           <Button
             onClick={(e) => {
               document.documentElement.style.setProperty("--x", `${e.clientX}px`);
