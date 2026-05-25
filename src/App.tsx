@@ -1,17 +1,16 @@
 import { Github } from "@/components/icons/Github";
-import { Moon, Sun } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTable, type ITableOptions } from "@/components/DataTable";
 import { SortableIcon } from "@/components/SortableIcon";
+import { ToggleTheme } from "@/components/ToggleTheme";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 
 import { DataService, type ICharacter } from "@/services/data.service";
-import { useTheme } from "@/providers/theme.context";
 
 const INIT_OPTS: ITableOptions = {
   columnSearch: true,
@@ -29,7 +28,6 @@ export default function App() {
   const [delay, setDelay] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [tableOptions, setTableOptions] = useState<ITableOptions>(INIT_OPTS);
-  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,21 +149,7 @@ export default function App() {
             >
               <Github className="stroke-neutral-500" strokeWidth={1.5} />
             </Button>
-            <Button
-              onClick={(e) => {
-                document.documentElement.style.setProperty("--x", `${e.clientX}px`);
-                document.documentElement.style.setProperty("--y", `${e.clientY}px`);
-                document.startViewTransition(() => setTheme(theme === "dark" ? "light" : "dark"));
-              }}
-              size="icon-sm"
-              variant="outline"
-            >
-              {theme === "dark" ? (
-                <Sun className="stroke-yellow-400" strokeWidth={1.5} />
-              ) : (
-                <Moon className="fill-neutral-200 stroke-neutral-400" strokeWidth={1.5} />
-              )}
-            </Button>
+            <ToggleTheme />
           </div>
         </div>
       </header>
