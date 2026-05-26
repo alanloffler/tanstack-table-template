@@ -30,7 +30,7 @@ export function SearchInput({ className, onChange, onClear, size, value }: ISear
   return (
     <div className={cn(searchInputVariants({ size }), className)}>
       <Search className="stroke-primary absolute top-1/2 left-5 h-4 w-4 -translate-x-1/2 -translate-y-1/2" />
-      <Input value={value} className="pl-9" onChange={onChange} placeholder="Buscar..." />
+      <Input value={value} className="pl-9" onChange={onChange} placeholder="Search..." />
       {value ? (
         <Button
           className="absolute top-1/2 -right-1.5 -translate-x-1/2 -translate-y-1/2 active:not-aria-[haspopup]:-translate-y-1/2"
