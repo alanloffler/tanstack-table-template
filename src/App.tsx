@@ -1,4 +1,5 @@
-import { Github } from "@/components/icons/Github";
+import { GithubIcon } from "@/components/icons/GithubIcon";
+import { ReactIcon } from "@/components/icons/ReactIcon";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,7 @@ export default function App() {
   const columns: ColumnDef<ICharacter>[] = [
     {
       accessorKey: "select-col",
-      id: "Seleccionar",
+      id: "Select",
       size: 20,
       enableColumnFilter: false,
       meta: {
@@ -85,7 +86,7 @@ export default function App() {
     },
     {
       accessorKey: "name",
-      id: "Nombre",
+      id: "Name",
       size: 80,
       header: ({ column }) => (
         <div className="flex items-center gap-1">
@@ -96,7 +97,7 @@ export default function App() {
     },
     {
       accessorKey: "gender",
-      id: "Género",
+      id: "Gender",
       size: 40,
       enableColumnFilter: false,
       header: ({ column }) => (
@@ -107,7 +108,7 @@ export default function App() {
     },
     {
       accessorKey: "age",
-      id: "Edad",
+      id: "Age",
       size: 40,
       enableColumnFilter: false,
       header: ({ column }) => (
@@ -120,7 +121,7 @@ export default function App() {
     },
     {
       accessorKey: "occupation",
-      id: "Ocupación",
+      id: "Occupation",
       minSize: 200,
       header: ({ column }) => (
         <div className="flex items-center gap-1">
@@ -137,7 +138,10 @@ export default function App() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <div className="flex flex-col">
             <h1 className="text-lg font-semibold tracking-tight">Tanstack Table</h1>
-            <span className="text-muted-foreground text-sm tracking-tight">React version</span>
+            <div className="flex items-center gap-1">
+              <ReactIcon />
+              <span className="text-muted-foreground text-sm tracking-tight">React</span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -147,7 +151,7 @@ export default function App() {
               size="icon-sm"
               variant="outline"
             >
-              <Github className="stroke-neutral-500" strokeWidth={1.5} />
+              <GithubIcon className="stroke-neutral-500" strokeWidth={1.5} />
             </Button>
             <ToggleTheme />
           </div>
@@ -156,7 +160,7 @@ export default function App() {
       <main className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-8">
         <Card className="flex flex-col gap-3">
           <CardHeader>
-            <CardTitle>Opciones de la tabla</CardTitle>
+            <CardTitle>Table options</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex gap-10 text-sm">
@@ -167,7 +171,7 @@ export default function App() {
                     checked={tableOptions?.exportPdf ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, exportPdf: !!checked })}
                   />
-                  <label htmlFor="export-pdf">Exportar PDF</label>
+                  <label htmlFor="export-pdf">Export PDF</label>
                 </li>
                 <li className="flex items-center gap-2">
                   <Checkbox
@@ -175,7 +179,7 @@ export default function App() {
                     checked={tableOptions?.exportXls ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, exportXls: !!checked })}
                   />
-                  <label htmlFor="export-xls">Exportar XLS</label>
+                  <label htmlFor="export-xls">Export XLS</label>
                 </li>
               </ul>
               <ul className="flex flex-col gap-3">
@@ -185,7 +189,7 @@ export default function App() {
                     checked={tableOptions?.dragAndDrop ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, dragAndDrop: !!checked })}
                   />
-                  <label htmlFor="drag-and-drop">Ordenar columnas</label>
+                  <label htmlFor="drag-and-drop">Sort columns</label>
                 </li>
                 <li className="flex items-center gap-2">
                   <Checkbox
@@ -193,7 +197,7 @@ export default function App() {
                     checked={tableOptions?.hideColumns ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, hideColumns: !!checked })}
                   />
-                  <label htmlFor="hide-columns">Ocultar columnas</label>
+                  <label htmlFor="hide-columns">Hide columns</label>
                 </li>
                 <li className="flex items-center gap-2">
                   <Checkbox
@@ -201,7 +205,7 @@ export default function App() {
                     checked={tableOptions?.columnSizing ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, columnSizing: !!checked })}
                   />
-                  <label htmlFor="resize-columns">Redimensionar columnas</label>
+                  <label htmlFor="resize-columns">Resize columns</label>
                 </li>
               </ul>
               <ul className="flex flex-col gap-3">
@@ -211,7 +215,7 @@ export default function App() {
                     checked={tableOptions?.columnSearch ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, columnSearch: !!checked })}
                   />
-                  <label htmlFor="column-search">Buscar en columnas</label>
+                  <label htmlFor="column-search">Search in columns</label>
                 </li>
                 <li className="flex items-center gap-2">
                   <Checkbox
@@ -219,7 +223,7 @@ export default function App() {
                     checked={tableOptions?.globalSearch ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, globalSearch: !!checked })}
                   />
-                  <label htmlFor="global-search">Buscar globalmente</label>
+                  <label htmlFor="global-search">Global search</label>
                 </li>
               </ul>
               <ul className="flex flex-col gap-3">
@@ -229,7 +233,7 @@ export default function App() {
                     checked={delay !== 0}
                     onCheckedChange={(checked) => setDelay(checked ? 4000 : 0)}
                   />
-                  <label htmlFor="simulate-async">Simular conexión lenta</label>
+                  <label htmlFor="simulate-async">Simulate slow connection</label>
                 </li>
                 <li className="flex items-center gap-2">
                   <Checkbox
@@ -237,7 +241,7 @@ export default function App() {
                     checked={tableOptions?.showTooltips ?? false}
                     onCheckedChange={(checked) => setTableOptions({ ...tableOptions, showTooltips: !!checked })}
                   />
-                  <label htmlFor="show-tooltips">Mostrar tooltips</label>
+                  <label htmlFor="show-tooltips">Show tooltips</label>
                 </li>
               </ul>
             </div>
@@ -245,13 +249,13 @@ export default function App() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Personajes de los Simpsons</CardTitle>
+            <CardTitle>Simpsons characters</CardTitle>
           </CardHeader>
           <CardContent>
             <DataTable
               data={data}
               columns={columns}
-              defaultSorting={[{ id: "Nombre", desc: false }]}
+              defaultSorting={[{ id: "Name", desc: false }]}
               loading={loading}
               options={tableOptions}
               storageKey="characters-01"
@@ -259,11 +263,11 @@ export default function App() {
           </CardContent>
         </Card>
         <section className="space-y-5">
-          <h2 className="text-2xl font-semibold tracking-tight">Personajes de los Simpsons</h2>
+          <h2 className="text-2xl font-semibold tracking-tight">Simpsons characters</h2>
           <DataTable
             data={data}
             columns={columns}
-            defaultSorting={[{ id: "Nombre", desc: false }]}
+            defaultSorting={[{ id: "Name", desc: false }]}
             loading={loading}
             options={tableOptions}
             storageKey="characters-02"
