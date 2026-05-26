@@ -71,7 +71,7 @@ export function UsersPage() {
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `data` | `TData[] \| undefined` | Row data. Pass `undefined` together with `loading={true}` to show skeletons. |
+| `data` | `TData[] `&#124;` undefined` | Row data. Pass `undefined` together with `loading={true}` to show skeletons. |
 | `columns` | `ColumnDef<TData, TValue>[]` | TanStack column definitions. |
 | `storageKey` | `string` | Unique key used to persist column state (order, visibility, sizing) in Zustand + localStorage. Each table instance must have a different key. |
 
@@ -91,7 +91,11 @@ export function UsersPage() {
 
 ## options
 
-All flags are `boolean` and default to `false` (disabled).
+All flags are `boolean` and default to `false` (disabled). Import from `@/components/DataTable`:
+
+```tsx
+import type { ITableOptions } from "@/components/DataTable";
+```
 
 | Flag | Description |
 |------|-------------|
@@ -102,6 +106,7 @@ All flags are `boolean` and default to `false` (disabled).
 | `exportXls` | Shows the XLS export button. Requires `exportXlsConfig`. |
 | `globalSearch` | Shows the global search input that filters across all columns. |
 | `hideColumns` | Shows the column visibility popover to toggle individual columns. Also shows the reset button. |
+| `showTooltips` | Shows tooltips on action buttons. |
 
 ```tsx
 const options: ITableOptions = {
@@ -112,9 +117,10 @@ const options: ITableOptions = {
   exportXls: true,
   globalSearch: true,
   hideColumns: true,
+  showTooltips: true,
 };
 
-<DataTable ... options={options} />
+<DataTable ... options={options} storageKey="users-table" />
 ```
 
 ---
@@ -172,6 +178,7 @@ Beyond standard TanStack `ColumnDef` fields, the component reads these:
 | `size` | `number` | Initial column width weight. Columns are distributed proportionally across the container based on this value. |
 | `minSize` | `number` | Minimum width in pixels the column can be resized to. Falls back to the global default of `40px`. |
 | `enableColumnFilter` | `boolean` | Set to `false` to hide the filter input for this column when `columnSearch` is enabled. |
+| `meta.alignment` | `"left" `&#124;` "center" `&#124;` "right"` | Text alignment for the column. |
 | `meta.disableDragging` | `boolean` | Set to `true` to exclude this column from drag-and-drop reordering (e.g. checkbox or ID columns). |
 | `meta.disableExport` | `boolean` | Set to `true` to exclude this column from PDF and XLS exports. |
 
@@ -183,6 +190,7 @@ Beyond standard TanStack `ColumnDef` fields, the component reads these:
   minSize: 30,
   enableColumnFilter: false,
   meta: {
+    alignment: "center",
     disableDragging: true,
     disableExport: true,
   },
@@ -194,4 +202,24 @@ Beyond standard TanStack `ColumnDef` fields, the component reads these:
 
 ## State persistence
 
-Column order, visibility, and sizing are persisted automatically in `localStorage` via Zustand under the key `"table-store"`. Each table is scoped by its `storageKey`. The reset button (shown when `dragAndDrop` or `hideColumns` is enabled) clears all persisted state for that table and restores default proportional column widths.
+Column order, visibility, and sizing are persisted automatically in `localStorage` via **Zustand** + `persist` middleware under the store key `"table-store"`. Each table instance is scoped by its `storageKey` prop.
+
+The reset button (shown when `dragAndDrop` or `hideColumns` is enabled) calls `clearTable(storageKey)` on the store, removing that table's persisted state and restoring default proportional column widths.
+
+**Store structure:**
+
+```ts
+interface ITableState {
+  columnOrder: string[];
+  columnSizing: ColumnSizingState;
+  columnVisibility: Record<string, boolean>;
+}
+
+interface ITableStore {
+  tables: Record<string, TableState>;  // keyed by storageKey
+  clearTable: (storageKey: string) => void;
+  setColumnOrder: (tableId: string, order: string[]) => void;
+  setColumnSizing: (tableId: string, sizing: ColumnSizingState) => void;
+  setColumnVisibility: (tableId: string, visibility: Record<string, boolean>) => void;
+}
+```
