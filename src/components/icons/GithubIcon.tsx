@@ -3,7 +3,7 @@ interface IProps {
   strokeWidth?: number;
 }
 
-export function Github({ className, strokeWidth = 2 }: IProps) {
+export function GithubIcon({ className, strokeWidth = 2 }: IProps) {
   return (
     <svg
       className={className}
