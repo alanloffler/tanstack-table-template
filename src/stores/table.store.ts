@@ -2,7 +2,7 @@ import type { ColumnSizingState } from "@tanstack/react-table";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface TableState {
+interface ITableState {
   columnOrder: string[];
   columnSizing: ColumnSizingState;
   columnVisibility: Record<string, boolean>;
@@ -13,7 +13,7 @@ interface ITableStore {
   setColumnOrder: (tableId: string, order: string[]) => void;
   setColumnSizing: (tableId: string, sizing: ColumnSizingState) => void;
   setColumnVisibility: (tableId: string, visibility: Record<string, boolean>) => void;
-  tables: Record<string, TableState>;
+  tables: Record<string, ITableState>;
 }
 
 export const useTableStore = create<ITableStore>()(
