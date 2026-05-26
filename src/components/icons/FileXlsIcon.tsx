@@ -8,7 +8,7 @@ interface IProps extends SVGProps<SVGSVGElement> {
   className?: string;
 }
 
-export function FileXls({ className }: IProps) {
+export function FileXlsIcon({ className }: IProps) {
   return (
     <svg
       className={cn("", className)}
