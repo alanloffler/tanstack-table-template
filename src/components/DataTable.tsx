@@ -1,6 +1,6 @@
-import { FilePdf } from "@/components/icons/FilePdf";
-import { FileXls } from "@/components/icons/FileXls";
 import { Columns3Cog, GripVertical, RefreshCcw } from "lucide-react";
+import { FilePdfIcon } from "@/components/icons/FilePdfIcon";
+import { FileXlsIcon } from "@/components/icons/FileXlsIcon";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -231,10 +231,10 @@ export function DataTable<TData, TValue>({
                     })
                   }
                 >
-                  <FilePdf className="size-5" />
+                  <FilePdfIcon className="size-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent hidden={!options?.showTooltips}>Exportar PDF</TooltipContent>
+              <TooltipContent hidden={!options?.showTooltips}>Export PDF</TooltipContent>
             </Tooltip>
           )}
           {options?.exportXls && (
@@ -253,10 +253,10 @@ export function DataTable<TData, TValue>({
                     })
                   }
                 >
-                  <FileXls className="size-5" />
+                  <FileXlsIcon className="size-5" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent hidden={!options?.showTooltips}>Exportar XLS</TooltipContent>
+              <TooltipContent hidden={!options?.showTooltips}>Export XLS</TooltipContent>
             </Tooltip>
           )}
           {(options?.hideColumns || options?.dragAndDrop) && (
@@ -271,7 +271,7 @@ export function DataTable<TData, TValue>({
                   <RefreshCcw />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent hidden={!options?.showTooltips}>Resetear tabla</TooltipContent>
+              <TooltipContent hidden={!options?.showTooltips}>Reset table</TooltipContent>
             </Tooltip>
           )}
           {options?.hideColumns && (
@@ -284,7 +284,7 @@ export function DataTable<TData, TValue>({
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
-                <TooltipContent hidden={!options?.showTooltips}>Seleccionar columnas</TooltipContent>
+                <TooltipContent hidden={!options?.showTooltips}>Select columns</TooltipContent>
               </Tooltip>
               <PopoverContent className="max-h-50 w-fit overflow-y-auto">
                 {table.getAllLeafColumns().map((column) => (
@@ -442,7 +442,7 @@ export function DataTable<TData, TValue>({
         {options?.dragAndDrop && (
           <DragOverlay>
             {activeColumnId ? (
-              <div className="bg-background flex min-h-10.5 items-center gap-2 rounded-md border px-2 py-1 text-sm shadow-lg">
+              <div className="bg-background flex min-h-10.5 w-fit items-center gap-2 rounded-md border px-2 py-1 text-sm shadow-lg">
                 <GripVertical className="text-muted-foreground h-4 w-4" />
                 {table
                   .getHeaderGroups()
