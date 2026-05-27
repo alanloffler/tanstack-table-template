@@ -139,7 +139,7 @@ export default function App() {
           <div className="flex flex-col">
             <h1 className="text-lg font-semibold tracking-tight">Tanstack Table</h1>
             <div className="flex items-center gap-1">
-              <ReactIcon />
+              <ReactIcon className="fill-foreground" />
               <span className="text-muted-foreground text-sm tracking-tight">React</span>
             </div>
           </div>
